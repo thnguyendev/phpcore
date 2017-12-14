@@ -26,11 +26,11 @@
 		require_once("core/apicontroller.php");
 		require_once("core/httpcodes.php");
 	
-		require_once("modules/apilist.php");
-		require_once("modules/controllerlist.php");
-		require_once("modules/modellist.php");
-		require_once("modules/viewlist.php");
-		require_once("modules/packagelist.php");
+		require_once("modules/api.php");
+		require_once("modules/controller.php");
+		require_once("modules/model.php");
+		require_once("modules/view.php");
+		require_once("modules/package.php");
 	
 		$Api = new ControllerModule(ApiFolder, $ApiList);
 		$Controllers = new ControllerModule(ControllerFolder, $ControllerList);
