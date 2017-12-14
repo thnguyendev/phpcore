@@ -5,6 +5,7 @@ PHP Core Framework is a simple and easy to use MVC framework for web application
 1. Download PHP Core and copy to your project folder
 2. Configure web server
     * Apache server
+    
     Modify .htaccess file of project as per following
     ```
     RewriteEngine On
@@ -13,6 +14,7 @@ PHP Core Framework is a simple and easy to use MVC framework for web application
     RewriteRule ^(.*)$ index.php?q=$1 [QSA,NC,L]
     ```
     * Nginx server
+    
     Insert following codes into your server configuration in nginx.conf
     ```
     location / {
