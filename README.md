@@ -105,7 +105,7 @@ PHP Core Framework is a simple and easy to use MVC framework for web application
         // define folder for all of models, the name ModelFolder should not be changed
         define("ModelFolder", "models/", true);
 
-        // decalre models here
+        // declare models here
         $ModelList = array (
             "info" => array ("file" => "info.php")
         );
