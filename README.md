@@ -82,6 +82,6 @@ PHP Core Framework is a simple and easy to use MVC framework for web application
              "" => array ("file" => "home.php"),
              "home" => array ("file" => "home.php")
          );
-    ?>
+     ?>
     ```
     
