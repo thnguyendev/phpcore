@@ -139,7 +139,6 @@ PHP Core Framework is a simple and easy to use MVC framework for web application
     * Declare new API controller in module by modifying file "modules/api.php"
     ```php
     <?php
-        <?php
         // PHP Core
         // Author: Hung Thanh Nguyen
 
