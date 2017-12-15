@@ -152,4 +152,4 @@ PHP Core Framework is a simple and easy to use MVC framework for web application
         );
     ?>
     ```
-4. Retrieve data from new Web API by url: <Your project URL>/api/getinfo
+4. Retrieve data from new Web API by url: Your project URL/api/getinfo
