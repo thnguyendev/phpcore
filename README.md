@@ -82,3 +82,74 @@ PHP Core Framework is a simple and easy to use MVC framework for web application
         );
     ?>
     ```
+
+## Web API
+1. Download, copy PHP Core framework to your project folder. Configure your web server
+2. Create a model
+    * Create "models" folder in your project folder
+    * Create "info.php" in "models" folder
+    ```php
+    <?php
+        class Info {
+            public $Name = "PHP Core";
+            public $Author = "Hung Thanh Nguyen";
+        }
+    ?>
+    ```
+    * Declare new model in module by modifying file "modules/model.php"
+    ```php
+    <?php
+        // PHP Core
+        // Author: Hung Thanh Nguyen
+
+        // define folder for all of models, the name ModelFolder should not be changed
+        define("ModelFolder", "models/", true);
+
+        // decalre models here
+        $ModelList = array (
+            "info" => array ("file" => "info.php")
+        );
+    ?>
+    ```
+3. Create an API controller
+    * Create "controllers" folder in your project folder
+    * Create "api" folder in "controllers" folder
+    * Create "getinfo.php" in "api" folder
+    ```php
+    <?php
+        require_once($Models->GetModule("info"));
+        class GetInfoController extends ApiController {
+            public function Process() {
+                if (preg_match("/^GET$/", $this->Request->Method)) {
+                    $this->Get();
+                }
+                else if (!preg_match("/^OPTIONS$/", $this->Request->Method)) {
+                    HttpCodes::MethodNotAllowed();
+                }
+            }
+
+            public function Get() {
+                header("Content-Type: application/json");
+                $response = new Info();
+                echo(json_encode($response));
+            }
+        }
+    ?>
+    ```
+    * Declare new API controller in module by modifying file "modules/api.php"
+    ```php
+    <?php
+        <?php
+        // PHP Core
+        // Author: Hung Thanh Nguyen
+
+        // define folder for all of api controllers, the name ApiFolder should not be changed
+        define("ApiFolder", "controllers/api/", true);
+
+        // declare api controllers here
+        $ApiList = array (
+            "getinfo" => array ("file" => "getinfo.php", "class" => "GetInfoController")
+        );
+    ?>
+    ```
+4. Retrieve data from new Web API by url: <Your project URL>/api/getinfo
