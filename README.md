@@ -1,5 +1,5 @@
 # phpcore 2.0
-PHP Core Framework is a simple and easy to use MVC framework for web application development. It has been developed for the ease of building web application in PHP with OOP and MVC framework. It could be useful for projects in education.
+phpcore framework is a simple and easy to use MVC framework for web application development. It has been developed for the ease of building web application in PHP with OOP and MVC framework. It could be useful for projects in education.
 
 ## Quick start
 1. Download and install Composer by the following url https://getcomposer.org/download/
