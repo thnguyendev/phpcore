@@ -1,6 +1,7 @@
 {
     "name": "thnguyendev/phpcore",
-    "description": "The Phpcore Framework.",
+    "description": "The phpcore framework.",
+    "version": "2.0.0",
     "keywords": ["framework", "phpcore"],
     "license": "MIT",
     "type": "project",
