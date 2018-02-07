@@ -3,7 +3,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
 
 ## Quick start
 1. Download and install Composer by the following url https://getcomposer.org/download/
-2. Create phpcore project by Composer. Execute below command
+2. Create phpcore project by Composer. Execute below commands
     ```
     > composer create-project thnguyendev/phpcore <project folder>
     > cd <project folder>
