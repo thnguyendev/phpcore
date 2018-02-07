@@ -146,7 +146,7 @@ Steps to create a Web API with phpcore framework.
         }
     ?>
     ```
-3. Create API controllers folder <project folder>/src/server/controllers/api and then create a API controller  <project folder>/src/server/controllers/api/GetInfoController.php
+3. Create API controllers folder <project folder>/src/server/controllers/api and then create a API controller <project folder>/src/server/controllers/api/GetInfoController.php
     ```php
     <?php
         namespace phpcore\controllers\api;
