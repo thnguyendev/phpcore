@@ -23,17 +23,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
         }
     }
     ```
-4. Create file composer.json
-    ```json
-    {
-        "autoload": {
-            "psr-4": {
-                "phpcore\\": "src/server"
-            }
-        }
-    }
-    ```
-    Run below command in console to install composer autoloading
+4. Run below command in console to install composer autoloading
     ```
     > composer install
     ```
@@ -226,14 +216,20 @@ Steps to create a Web API with phpcore framework.
 ## Use Doctrine 2 to work with database
 This example will create a Web API that returns data from SQLite with Doctrine, make sure that SQLite PDO has been enabled in PHP configuration.
 1. Install Composer, copy phpcore to your project folder and configure your web server like step 3 in quick start
-2. Create file composer.json
+2. Modify file composer.json
     ```json
     {
+        "name": "thnguyendev/phpcore",
+        "description": "The phpcore framework.",
+        "version": "2.0.0",
+        "keywords": ["framework", "phpcore"],
+        "license": "MIT",
+        "type": "project",
         "autoload": {
             "psr-4": {
-                "phpcore\\": "src/server"
+               "phpcore\\": "src/server"
             }
-        },
+         },
         "require": {
             "doctrine/orm": "2.5.*"
         }
