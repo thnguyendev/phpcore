@@ -3,7 +3,10 @@ phpcore framework is a simple and easy to use MVC framework for web application 
 
 ## Quick start
 1. Download and install Composer by the following url https://getcomposer.org/download/
-2. Download phpcore and copy to your project folder
+2. Create phpcore project by Composer. Execute below command
+    ```
+    > composer create-project thnguyendev/phpcore <project folder>
+    ```
 3. Configure web server
     * Apache server
     Modify .htaccess file of project as per following
@@ -23,11 +26,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
         }
     }
     ```
-4. Run below command in console to install composer autoloading
-    ```
-    > composer install
-    ```
-5. Create startup file <project folder>/src/server/Startup.php
+4. Create startup file <project folder>/src/server/Startup.php
     ```php
     <?php
         namespace phpcore;
@@ -67,7 +66,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
     ?>
 
     ```
-6. Create controllers folder <project folder>/src/server/controllers and then create a controller in controllers  <project folder>/src/server/controllers/HomeController.php
+5. Create controllers folder <project folder>/src/server/controllers and then create a controller in controllers <project folder>/src/server/controllers/HomeController.php
     ```php
     <?php
         namespace phpcore\controllers;
@@ -86,7 +85,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
         }
     ?>
     ```
-7. Create views folder <project folder>/src/server/views and create a view for HomeController <project folder>/src/server/views/Home.php
+6. Create views folder <project folder>/src/server/views and create a view for HomeController <project folder>/src/server/views/Home.php
     ```html
     <!DOCTYPE html>
     <html lang="en">
@@ -103,7 +102,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
 
 ## Web API
 Steps to create a Web API with phpcore framework.
-1. Follow steps 1 to 4 from qucik start to setup new project.
+1. Follow steps 1 to 3 from quick start to setup new project.
 2. Create startup file <project folder>/src/server/Startup.php
     ```php
     <?php
@@ -215,8 +214,8 @@ Steps to create a Web API with phpcore framework.
 
 ## Use Doctrine 2 to work with database
 This example will create a Web API that returns data from SQLite with Doctrine, make sure that SQLite PDO has been enabled in PHP configuration.
-1. Install Composer, copy phpcore to your project folder and configure your web server like step 3 in quick start
-2. Modify file composer.json
+1. Follow steps 1 to 3 from quick start to setup new project.
+2. Modify file <project folder>/composer.json
     ```json
     {
         "name": "thnguyendev/phpcore",
@@ -227,7 +226,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
         "type": "project",
         "autoload": {
             "psr-4": {
-               "phpcore\\": "src/server"
+                "phpcore\\": "src/server"
             }
          },
         "require": {
@@ -235,9 +234,9 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
         }
     }
     ```
-    Run below command in console to install composer autoloading and Doctrine ORM
+    Run below command in console to update project
     ```
-    > composer install
+    > composer update
     ```
 3. Create Info class <project folder>/src/server/models/Info.php
     ```php
@@ -399,7 +398,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
         }
     ?>
     ```
-7. Create API controllers folder <project folder>/src/server/controllers/api and then create a API controller  <project folder>/src/server/controllers/api/GetInfoController.php
+7. Create API controllers folder <project folder>/src/server/controllers/api and then create a API controller <project folder>/src/server/controllers/api/GetInfoController.php
     ```php
     <?php
         namespace phpcore\controllers\api;
