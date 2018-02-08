@@ -37,6 +37,8 @@ phpcore framework is a simple and easy to use MVC framework for web application 
         use phpcore\core\Route;
 
         class Startup extends App {
+            // declare api controllers
+            public $ApiRoutes = array();
 
             // declare web controllers
             public $WebRoutes = array(
@@ -48,6 +50,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
             public function __construct() {
                 try {
                     parent::__construct();
+                    $this->Route->setApiRoutes($this->ApiRoutes);
                     $this->Route->setWebRoutes($this->WebRoutes);
                 }
                 catch (Exception $e) {
@@ -57,6 +60,10 @@ phpcore framework is a simple and easy to use MVC framework for web application 
 
             public function process() {
                 try {
+                    if ($this->Request->IsApi) {
+                        $this->useCors("*");
+                    }
+
                     $this->useMvc();
                 }
                 catch (Exception $e) {
@@ -67,7 +74,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
     ?>
 
     ```
-5. Create a HomeController [project folder]/src/server/controllers/HomeController.php
+5. Create HomeController [project folder]/src/server/controllers/HomeController.php
     ```php
     <?php
         namespace phpcore\controllers;
@@ -114,17 +121,20 @@ Steps to create a Web API with phpcore framework.
         use phpcore\core\Route;
 
         class Startup extends App {
-
             // declare api controllers
             public $ApiRoutes = array(
                 "namespace" => "phpcore\\controllers\\api\\",
                 "getinfo" => array("controller" => "GetInfoController")
             );
-
+            
+            // declare web controllers
+            public $WebRoutes = array();
+            
             public function __construct() {
                 try {
                     parent::__construct();
                     $this->Route->setApiRoutes($this->ApiRoutes);
+                    $this->Route->setWebRoutes($this->WebRoutes);
                 }
                 catch (Exception $e) {
                     throw $e;
@@ -367,17 +377,20 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
         use phpcore\core\Route;
 
         class Startup extends App {
-
             // declare api controllers
             public $ApiRoutes = array(
                 "namespace" => "phpcore\\controllers\\api\\",
                 "getinfo" => array("controller" => "GetInfoController")
             );
-
+            
+            // declare web controllers
+            public $WebRoutes = array();
+            
             public function __construct() {
                 try {
                     parent::__construct();
-                    $this->Route->SetApiRoutes($this->ApiRoutes);
+                    $this->Route->setApiRoutes($this->ApiRoutes);
+                    $this->Route->setWebRoutes($this->WebRoutes);
                 }
                 catch (Exception $e) {
                     throw $e;
