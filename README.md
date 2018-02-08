@@ -27,7 +27,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
         }
     }
     ```
-4. Create startup file [project folder]/src/server/Startup.php
+4. Modify startup file [project folder]/src/server/Startup.php
     ```php
     <?php
         namespace phpcore;
@@ -48,7 +48,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
             public function __construct() {
                 try {
                     parent::__construct();
-                    $this->Route->SetWebRoutes($this->WebRoutes);
+                    $this->Route->setWebRoutes($this->WebRoutes);
                 }
                 catch (Exception $e) {
                     throw $e;
@@ -67,7 +67,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
     ?>
 
     ```
-5. Create controllers folder [project folder]/src/server/controllers and then create a controller in controllers [project folder]/src/server/controllers/HomeController.php
+5. Create a HomeController [project folder]/src/server/controllers/HomeController.php
     ```php
     <?php
         namespace phpcore\controllers;
@@ -86,7 +86,7 @@ phpcore framework is a simple and easy to use MVC framework for web application 
         }
     ?>
     ```
-6. Create views folder [project folder]/src/server/views and create a view for HomeController [project folder]/src/server/views/Home.php
+6. Create a view for HomeController [project folder]/src/server/views/Home.php
     ```html
     <!DOCTYPE html>
     <html lang="en">
@@ -103,8 +103,8 @@ phpcore framework is a simple and easy to use MVC framework for web application 
 
 ## Web API
 Steps to create a Web API with phpcore framework.
-1. Follow steps 1 to 3 from quick start to setup new project.
-2. Create startup file [project folder]/src/server/Startup.php
+1. Follow steps 1 to 3 from Quick start to setup new project.
+2. Modify startup file [project folder]/src/server/Startup.php
     ```php
     <?php
         namespace phpcore;
@@ -124,7 +124,7 @@ Steps to create a Web API with phpcore framework.
             public function __construct() {
                 try {
                     parent::__construct();
-                    $this->Route->SetApiRoutes($this->ApiRoutes);
+                    $this->Route->setApiRoutes($this->ApiRoutes);
                 }
                 catch (Exception $e) {
                     throw $e;
@@ -146,7 +146,7 @@ Steps to create a Web API with phpcore framework.
         }
     ?>
     ```
-3. Create API controllers folder [project folder]/src/server/controllers/api and then create a API controller [project folder]/src/server/controllers/api/GetInfoController.php
+3. Create an API controller [project folder]/src/server/controllers/api/GetInfoController.php
     ```php
     <?php
         namespace phpcore\controllers\api;
@@ -215,13 +215,13 @@ Steps to create a Web API with phpcore framework.
 
 ## Use Doctrine 2 to work with database
 This example will create a Web API that returns data from SQLite with Doctrine, make sure that SQLite PDO has been enabled in PHP configuration.
-1. Follow steps 1 to 3 from quick start to setup new project.
+1. Follow steps 1 to 3 from Quick start to setup new project.
 2. Modify file [project folder]/composer.json
     ```json
     {
         "name": "thnguyendev/phpcore",
         "description": "The phpcore framework.",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "keywords": ["framework", "phpcore"],
         "license": "MIT",
         "type": "project",
@@ -357,7 +357,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
     ```
     > vendor/bin/doctrine orm:schema-tool:create
     ```
-6. Create Startup file [project folder]/src/server/Startup.php
+6. Modify startup file [project folder]/src/server/Startup.php
     ```php
     <?php
         namespace phpcore;
@@ -399,7 +399,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
         }
     ?>
     ```
-7. Create API controllers folder [project folder]/src/server/controllers/api and then create a API controller [project folder]/src/server/controllers/api/GetInfoController.php
+7. Create a API controller [project folder]/src/server/controllers/api/GetInfoController.php
     ```php
     <?php
         namespace phpcore\controllers\api;
