@@ -412,7 +412,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
         }
     ?>
     ```
-7. Create a API controller [project folder]/src/server/controllers/api/GetInfoController.php
+7. Create an API controller [project folder]/src/server/controllers/api/GetInfoController.php
     ```php
     <?php
         namespace phpcore\controllers\api;
