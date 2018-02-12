@@ -1,4 +1,4 @@
-# phpcore 2.0.1
+# phpcore 2.0.2
 phpcore framework is a simple and easy to use MVC framework for web application development. It has been developed for the ease of building web application in PHP with OOP and MVC framework. It could be useful for projects in education.
 
 ## Quick start
