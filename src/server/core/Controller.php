@@ -20,9 +20,9 @@
 
 		public function fixViewFolder() {
 			try {
-				$this->ViewFolder = preg_replace("/\//", "\\", $this->ViewFolder);
-				if (substr($this->ViewFolder, -1) != "\\")
-					$this->ViewFolder = $this->ViewFolder . "\\";
+				$this->ViewFolder = str_replace("\\", "/", $this->ViewFolder);
+				if (substr($this->ViewFolder, -1) != "/")
+					$this->ViewFolder = $this->ViewFolder . "/";
 			}
 			catch (Exception $e) {
 				throw $e;
