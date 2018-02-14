@@ -1,4 +1,4 @@
-# phpcore 2.0.3
+# phpcore 2.0.4
 phpcore framework is a simple and easy to use MVC framework for web application development. It has been developed for the ease of building web application in PHP with OOP and MVC framework. It could be useful for projects in education.
 
 ## Quick start
@@ -231,7 +231,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
     {
         "name": "thnguyendev/phpcore",
         "description": "The phpcore framework.",
-        "version": "2.0.1",
+        "version": "2.0.4",
         "keywords": ["framework", "phpcore"],
         "license": "MIT",
         "type": "project",
