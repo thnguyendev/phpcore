@@ -460,7 +460,7 @@ This example demonstrate authentication with Firebase Jwt.
                     }
                 }
                 if (!$authorized) {
-                    throw new Exception("Authorize failed", HttpCodes::unauthorized);
+                    throw new Exception("Authorization failed", HttpCodes::unauthorized);
                 }
             }
         }
