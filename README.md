@@ -367,7 +367,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
     ?>
     ```
 
-## Firebase Jwt authorization
+## Firebase jwt authorization
 This example demonstrate authentication with Firebase Jwt.
 1. Follow steps 1 to 3 from Quick start to setup new project.
 2. Modify file [project folder]/composer.json
