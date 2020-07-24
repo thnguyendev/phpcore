@@ -156,7 +156,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
     {
         "name": "thnguyendev/phpcore",
         "description": "The phpcore framework.",
-        "version": "*",
+        "version": "3.0.0",
         "keywords": ["framework", "phpcore"],
         "license": "MIT",
         "type": "project",
@@ -375,7 +375,7 @@ This example demonstrate authentication with Firebase Jwt.
     {
         "name": "thnguyendev/phpcore",
         "description": "The phpcore framework.",
-        "version": "*",
+        "version": "3.0.0",
         "keywords": ["framework", "phpcore"],
         "license": "MIT",
         "type": "project",
