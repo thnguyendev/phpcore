@@ -3,39 +3,76 @@
 
 	use Exception;
 
-	abstract class ApiController extends Controller {
+	class ApiController implements ApiControllerInterface {
+		private AppInterface $app;
 
-		public function process() {
-			try {
-				if (preg_match("/^GET$/", $this->Request->Method)) {
-					$this->get();
-				}
-				else if (preg_match("/^POST$/", $this->Request->Method)) {
-					$this->post();
-				}
-				else if (preg_match("/^PUT$/", $this->Request->Method)) {
-					$this->put();
-				}
-				else if (preg_match("/^DELETE$/", $this->Request->Method)) {
-					$this->delete();
-				}
-				else if (preg_match("/^PATCH$/", $this->Request->Method)) {
-					$this->patch();
-				}
-				else if (preg_match("/^OPTIONS$/", $this->Request->Method)) {
-					$this->options();
-				}
+		public function checkMethod() {
+			$requestService = $this->app->getService("phpcore\\core\\RequestService");
+			if (!isset($requestService)) {
+				throw new Exception("Request service not found", HttpCodes::internalServerError);
 			}
-			catch (Exception $e) {
-				throw $e;
+			$method = $requestService->getRequest()["Method"];
+			if (preg_match("/^GET$/", $method)) {
+				$this->get();
+			}
+			else if (preg_match("/^POST$/", $method)) {
+				$this->post();
+			}
+			else if (preg_match("/^PUT$/", $method)) {
+				$this->put();
+			}
+			else if (preg_match("/^DELETE$/", $method)) {
+				$this->delete();
+			}
+			else if (preg_match("/^PATCH$/", $method)) {
+				$this->patch();
+			}
+			else if (preg_match("/^OPTIONS$/", $method)) {
+				$this->options();
+			}
+			else {
+				throw new Exception("Unknown method", HttpCodes::methodNotAllowed);
+			}
+		}
+		
+		public function get() {
+            HttpCodes::methodNotAllowed();
+        }
+
+        public function post() {
+            HttpCodes::methodNotAllowed();
+        }
+
+        public function put() {
+            HttpCodes::methodNotAllowed();
+        }
+
+        public function delete() {
+            HttpCodes::methodNotAllowed();
+        }
+
+        public function patch() {
+            HttpCodes::methodNotAllowed();
+		}
+		
+		public function options() {
+			if ($this->app->allowCors()) {
+				header(sprintf("Access-Control-Allow-Origin: %s", $this->app->getAllowedOrigins()));
+				header(sprintf("Access-Control-Allow-Methods: %s", $this->app->getAllowedMethods()));
+				header(sprintf("Access-Control-Allow-Headers: %s", $this->app->getAllowedHeaders()));
+				HttpCodes::ok();
+			}
+			else {
+				HttpCodes::forbidden();
 			}
 		}
 
-		public abstract function get();
-		public abstract function post();
-		public abstract function put();
-		public abstract function delete();
-		public abstract function patch();
-		public abstract function options();
+		public function getApp() {
+			return $this->app;
+		}
+
+		public function setApp($app) {
+			$this->app = $app;
+		}
 	}
 ?>

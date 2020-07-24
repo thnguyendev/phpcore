@@ -1,7 +1,9 @@
 <?php
-    // define boostrap class
-    define("STARTUP", "phpcore\\Startup", true);
+    namespace phpcore;
 
-    // define default views folder
-    define("DEFAULT_VIEWS_FOLDER", "src/server/views/", true);
+    // define boostrap class
+    define("APP_CLASS", "phpcore\\Startup");
+
+    // define error handler
+    define("ERROR_CLASS", "phpcore\\core\\ErrorService");
 ?>

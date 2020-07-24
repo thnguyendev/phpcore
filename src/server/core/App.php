@@ -3,55 +3,93 @@
 
     use Exception;
 
-    abstract class App {
-        public $Request;
-        public $Route;
-        public $ErrorHandler;
+    class App implements AppInterface{
+        private $services = array();
+        private $allowedOrigins;
+		private $allowedMethods;
+		private $allowedHeaders;
 
         public function __construct() {
-            try {
-                $this->Request = new Request();
-                $this->Route = new Route();
-                $this->setErrorHandler(new DefaultErrorHandler());
-            }
-            catch (Exception $e) {
-				throw $e;
-			}
+            $this->addService(new RequestService($this));
+            $this->addService(new RouteService($this));
+            $this->getService("phpcore\\core\\RequestService")->redirectToNoTrailingSlash();
         }
 
-        public function setErrorHandler(IErrorHandler $errorHandler) {
+        public function process() {
             try {
-                $this->ErrorHandler = $errorHandler;
+                $this->getService("phpcore\\core\\RouteService")->mapController();
             }
-            catch (Exception $e) {
-				throw $e;
-			}
+            catch(Exception $exception) {
+                throw $exception;
+            }
         }
 
-        public function useMvc() {
-            try {
-                $ControllerClass = $this->Route->getController($this->Request->Controller, $this->Request->IsApi);
-                $Controller = new $ControllerClass($this->Request);
-                $Controller->process();
-            }
-            catch (Exception $e) {
-				throw $e;
-			}
+        public function addService(object $service) {
+            array_push($this->services, $service);
         }
 
-        public function useCors(string $origin) {
-            try {
-                if ($origin == "" || $origin == "*")
-                    $origin = $this->Request->Origin;
-                header('Access-Control-Allow-Origin: ' . $origin);
-                header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS');
-                header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        public function getService(string $className) {
+            $service = null;
+            $length = count($this->services);
+            $i = 0;
+            while ($i < $length && get_class($this->services[$i]) != $className) {
+                $i++;
             }
-            catch (Exception $e) {
-				throw $e;
-			}
+            if ($i < $length)
+                $service = $this->services[$i];
+            return $service;
         }
 
-        abstract public function process();
+        public function enableCors($origins = "", $methods = "", $headers = "") {
+            $requestService = $this->getService("phpcore\\core\\RequestService");
+			if (!isset($requestService)) {
+				throw new Exception("Request service not found", HttpCodes::internalServerError);
+			}
+            if ($origins === "" || $origins === "*")
+                if (isset($requestService->getHeader()["Origin"])) {
+                    $this->allowedOrigins = $requestService->getHeader()["Origin"];
+                }
+			else
+				$this->allowedOrigins = $origins;
+			if ($methods === "" || $methods === "*")
+				$this->allowedMethods = "GET, POST, PUT, DELETE, PATCH, OPTIONS";
+			else
+				$this->allowedMethods = $methods;
+			if ($headers === "" || $headers === "*")
+				$this->allowedHeaders = "Origin, X-Requested-With, Content-Type, Accept, Authorization";
+			else
+				$this->allowedHeaders = $headers;
+        }
+        
+        public function allowCors() {
+			$requestService = $this->getService("phpcore\\core\\RequestService");
+			if (!isset($requestService)) {
+				throw new Exception("Request service not found", HttpCodes::internalServerError);
+			}
+            $allow = true;
+			if (isset($requestService->getHeader()["Origin"])) {
+                $origin = $requestService->getHeader()["Origin"];
+				$origins = explode(",", $this->allowedOrigins);
+				$i = 0;
+                $count = count($origins);
+				while($i < $count && ltrim(rtrim($origins[$i])) !== $origin)
+					$i++;
+				if ($i === $count)
+					$allow = false;
+			}
+			return $allow;
+        }
+        
+        public function getAllowedOrigins() {
+            return $this->allowedOrigins;
+        }
+
+        public function getAllowedMethods() {
+            return $this->allowedMethods;
+        }
+
+        public function getAllowedHeaders() {
+            return $this->allowedHeaders;
+        }
     }
 ?>

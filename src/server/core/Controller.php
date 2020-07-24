@@ -3,41 +3,56 @@
 
 	use Exception;
 	
-	abstract class Controller {
-		protected $Request;
-		protected $ViewFolder;
+	class Controller implements ControllerInterface {
+		private AppInterface $app;
 
-		public function __construct(&$request) {
-			try {
-				$this->Request = $request;
-				$this->ViewFolder = DEFAULT_VIEWS_FOLDER;
-				$this->fixViewFolder();
+		public function view() {
+			$routeService = $this->app->getService("phpcore\\core\\RouteService");
+			if (!isset($routeService)) {
+				throw new Exception("Route service not found", HttpCodes::internalServerError);
 			}
-			catch (Exception $e) {
-				throw $e;
+			$route = $routeService->getRoute();
+			if (isset($route[RouteDefine::view])) {
+				$view = str_replace("/\\/", "/", $route[RouteDefine::view]);
+				if (file_exists($view))
+					require_once($view);
+				else
+					throw new Exception(sprintf("View %s not found", $view), HttpCodes::notFound);
 			}
 		}
 
-		public function fixViewFolder() {
-			try {
-				$this->ViewFolder = str_replace("\\", "/", $this->ViewFolder);
-				if (substr($this->ViewFolder, -1) != "/")
-					$this->ViewFolder = $this->ViewFolder . "/";
+		public function process() {
+			$this->view();
+		}
+
+		public function checkMethod() {
+			$requestService = $this->app->getService("phpcore\\core\\RequestService");
+			if (!isset($requestService)) {
+				throw new Exception("Request service not found", HttpCodes::internalServerError);
 			}
-			catch (Exception $e) {
-				throw $e;
+			$method = $requestService->getRequest()["Method"];
+			if (preg_match("/^OPTIONS$/", $method)) {
+				if ($this->app->allowCors()) {
+					header(sprintf("Access-Control-Allow-Origin: %s", $this->app->getAllowedOrigins()));
+					header(sprintf("Access-Control-Allow-Methods: %s", $this->app->getAllowedMethods()));
+					header(sprintf("Access-Control-Allow-Headers: %s", $this->app->getAllowedHeaders()));
+					HttpCodes::ok();
+				}
+				else {
+					HttpCodes::forbidden();
+				}
+			}
+			else {
+				$this->process();
 			}
 		}
 
-		public function view($view) {
-			try {
-				require_once($this->ViewFolder . $view . ".php");
-			}
-			catch (Exception $e) {
-				throw $e;
-			}
+		public function getApp() {
+			return $this->app;
 		}
 
-		public abstract function process();
+		public function setApp($app) {
+			$this->app = $app;
+		}
 	}
 ?>

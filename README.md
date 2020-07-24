@@ -1,5 +1,5 @@
-# phpcore 2.0.4
-phpcore framework is a simple and easy to use MVC framework for web application development. It has been developed for the ease of building web application in PHP with OOP and MVC framework. It could be useful for projects in education.
+# phpcore 3.0.0
+phpcore is a tiny MVC framework to develop web-based applications in PHP. It's simple and easy to use.
 
 ## Quick start
 1. Download and install Composer by the following url https://getcomposer.org/download/
@@ -27,52 +27,40 @@ phpcore framework is a simple and easy to use MVC framework for web application 
         }
     }
     ```
-4. Modify startup file [project folder]/src/server/Startup.php
+4. Create Routes [project folder]/src/server/models/Routes.php
+    ```php
+    <?php
+        namespace phpcore\models;
+
+        use phpcore\core\RouteDefine;
+
+        class Routes {
+            public const paths = array(
+                "" => array (
+                    RouteDefine::controller => "phpcore\\controllers\\HomeController",
+                    RouteDefine::view => "src/server/views/Home.php"
+                )
+            );
+        }
+    ?>
+    ```
+5. Modify startup file [project folder]/src/server/Startup.php
     ```php
     <?php
         namespace phpcore;
 
-        use Exception;
         use phpcore\core\App;
-        use phpcore\core\Route;
+        use phpcore\models\Routes;
 
         class Startup extends App {
-            // declare api controllers
-            public $ApiRoutes = array();
-
-            // declare web controllers
-            public $WebRoutes = array(
-                "namespace" => "phpcore\\controllers\\",
-                "" => array("controller" => "HomeController"),
-                "home" => array("controller" => "HomeController")
-            );
-
             public function __construct() {
-                try {
-                    parent::__construct();
-                    $this->Route->setApiRoutes($this->ApiRoutes);
-                    $this->Route->setWebRoutes($this->WebRoutes);
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function process() {
-                try {
-                    if ($this->Request->IsApi) {
-                        $this->useCors("*");
-                    }
-
-                    $this->useMvc();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
+                parent::__construct();
+                $routeService = $this->getService("phpcore\\core\\RouteService");
+                $routeService->setRoutes(Routes::paths);
+                $routeService->mapRoute();
             }
         }
     ?>
-
     ```
 5. Create HomeController [project folder]/src/server/controllers/HomeController.php
     ```php
@@ -82,15 +70,12 @@ phpcore framework is a simple and easy to use MVC framework for web application 
         use phpcore\core\Controller;
 
         class HomeController extends Controller {
-            public function process() {
-                try {
-                    $this->view("Home");
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
+        public $message;
+        public function process() {
+            $this->message = "Welcome to PHP Core";
+            $this->view();
         }
+    }
     ?>
     ```
 6. Create a view for HomeController [project folder]/src/server/views/Home.php
@@ -100,10 +85,10 @@ phpcore framework is a simple and easy to use MVC framework for web application 
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PHP Core Quick Start</title>
+        <title>PHP Core</title>
     </head>
     <body>
-        <h1>PHP Core Quick Start</h1>
+        <h1><?php echo $this->message; ?></h1>
     </body>
     </html>
     ```
@@ -111,47 +96,37 @@ phpcore framework is a simple and easy to use MVC framework for web application 
 ## Web API
 Steps to create a Web API with phpcore framework.
 1. Follow steps 1 to 3 from Quick start to setup new project.
+2. Create Routes [project folder]/src/server/models/Routes.php
+    ```php
+    <?php
+        namespace phpcore\models;
+
+        use phpcore\core\RouteDefine;
+
+        class Routes {
+            public const paths = array(
+                "getinfo" => array (
+                    RouteDefine::controller => "phpcore\\controllers\\GetInfoController"
+                )
+            );
+        }
+    ?>
+    ```
 2. Modify startup file [project folder]/src/server/Startup.php
     ```php
     <?php
         namespace phpcore;
 
-        use Exception;
         use phpcore\core\App;
-        use phpcore\core\Route;
+        use phpcore\models\Routes;
 
         class Startup extends App {
-            // declare api controllers
-            public $ApiRoutes = array(
-                "namespace" => "phpcore\\controllers\\api\\",
-                "getinfo" => array("controller" => "GetInfoController")
-            );
-            
-            // declare web controllers
-            public $WebRoutes = array();
-            
             public function __construct() {
-                try {
-                    parent::__construct();
-                    $this->Route->setApiRoutes($this->ApiRoutes);
-                    $this->Route->setWebRoutes($this->WebRoutes);
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function process() {
-                try {
-                    if ($this->Request->IsApi) {
-                        $this->useCors("*");
-                    }
-
-                    $this->useMvc();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
+                parent::__construct();
+                $this->enableCors();
+                $routeService = $this->getService("phpcore\\core\\RouteService");
+                $routeService->setRoutes(Routes::paths);
+                $routeService->mapRoute();
             }
         }
     ?>
@@ -159,71 +134,21 @@ Steps to create a Web API with phpcore framework.
 3. Create an API controller [project folder]/src/server/controllers/api/GetInfoController.php
     ```php
     <?php
-        namespace phpcore\controllers\api;
+        namespace phpcore\controllers;
 
         use phpcore\core\ApiController;
-        use phpcore\core\HttpCodes;
+        use phpcore\core\ContentType;
 
         class GetInfoController extends ApiController {
             public function get() {
-                try {
-                    header("Content-Type: application/json");
-                    echo("{'Name':'PHP Core','Author':'Hung Thanh Nguyen'}");
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function options() {
-                try {
-                    HttpCodes::ok();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function post() {
-                try {
-                    HttpCodes::methodNotAllowed();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function put() {
-                try {
-                    HttpCodes::methodNotAllowed();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function delete() {
-                try {
-                    HttpCodes::methodNotAllowed();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function patch() {
-                try {
-                    HttpCodes::methodNotAllowed();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
+                ContentType::applicationJson();
+                echo("{ 'Name': 'PHP Core', 'Author': 'Hung Thanh Nguyen' }");
             }
         }
     ?>
     ```
 
-## Use Doctrine 2 to work with database
+## Use Doctrine ORM to work with Sqlite database
 This example will create a Web API that returns data from SQLite with Doctrine, make sure that SQLite PDO has been enabled in PHP configuration.
 1. Follow steps 1 to 3 from Quick start to setup new project.
 2. Modify file [project folder]/composer.json
@@ -231,7 +156,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
     {
         "name": "thnguyendev/phpcore",
         "description": "The phpcore framework.",
-        "version": "2.0.4",
+        "version": "*",
         "keywords": ["framework", "phpcore"],
         "license": "MIT",
         "type": "project",
@@ -241,7 +166,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
             }
          },
         "require": {
-            "doctrine/orm": "2.5.*"
+            "doctrine/orm": "*"
         }
     }
     ```
@@ -257,56 +182,80 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
         use Doctrine\ORM\Mapping as ORM;
 
         /**
-        * @ORM\Entity @ORM\Table(name="Info")
+        * @ORM\Entity
+        * @ORM\Table(name="Info")
         **/
         class Info {
             /**
-            * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
+            * @ORM\Id
+            * @ORM\Column(type="integer")
+            * @ORM\GeneratedValue
             * @var int
             **/
-            public $ID;
+            private $ID;
 
             /**
             * @ORM\Column(type="string")
             * @var string
             **/
-            public $Name;
+            private $Name;
 
             /**
             * @ORM\Column(type="string")
             * @var string
             **/
-            public $Author;
+            private $Author;
+
+            public function getID() {
+                return $this->ID;
+            }
+
+            public function getName() {
+                return $this->Name;
+            }
+
+            public function setName($name) {
+                $this->Name = $name;
+            }
+
+            public function getAuthor() {
+                return $this->Author;
+            }
+
+            public function setAuthor($author) {
+                $this->Author = $author;
+            }
         }
     ?>
     ```
-4. Create DataContext class [project folder]/src/server/models/DataContext.php
+4. Create DataService class [project folder]/src/server/services/DataService.php
     ```php
     <?php
-        namespace phpcore\models;
+        namespace phpcore\services;
 
         use Exception;
         use Doctrine\ORM\Tools\Setup;
         use Doctrine\ORM\EntityManager;
+        use phpcore\models\Info;
 
-        class DataContext {
+        class DataService {
 
-            protected $EntityManager;
+            private $entityManager;
 
             public function __construct() {
                 try {
                     // Create a simple "default" Doctrine ORM configuration for Annotations
                     $isDevMode = true;
-                    $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . "/"), $isDevMode, null, null, false);
+                    $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . "/../models"), $isDevMode, null, null, false);
 
-                    // database configuration parameters
+                    // database configuration parameters for Sqlite
                     $conn = array(
                         'driver' => 'pdo_sqlite',
                         'path' => __DIR__ . '/../db.sqlite',
                     );
 
                     // obtaining the entity manager
-                    $this->EntityManager = EntityManager::create($conn, $config);
+                    $this->entityManager = EntityManager::create($conn, $config);
                 }
                 catch (Exception $e) {
                     throw $e;
@@ -315,14 +264,14 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
 
             public function initialize() {
                 try {
-                    $InfoRepository = $this->EntityManager->getRepository("phpcore\\models\\Info");
-                    $Info = $InfoRepository->findAll();
-                    if (count($Info) == 0) {
-                        $NewInfo = new Info();
-                        $NewInfo->Name = "PHP Core";
-                        $NewInfo->Author = "Hung Thanh Nguyen";
-                        $this->EntityManager->persist($NewInfo);
-                        $this->EntityManager->flush();
+                    $infoRepository = $this->entityManager->getRepository("phpcore\\models\\Info");
+                    $info = $infoRepository->findAll();
+                    if (count($info) == 0) {
+                        $newInfo = new Info();
+                        $newInfo->setName("PHP Core");
+                        $newInfo->setAuthor("Hung Thanh Nguyen");
+                        $this->entityManager->persist($newInfo);
+                        $this->entityManager->flush();
                     }
                 }
                 catch (Exception $e) {
@@ -330,24 +279,8 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
                 }
             }
 
-            public function findInfo() {
-                try {
-                    $InfoRepository = $this->EntityManager->getRepository("phpcore\\models\\Info");
-                    $Info = $InfoRepository->findAll();
-                    return $Info;
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
             public function getEntityManager() {
-                try {
-                    return $this->EntityManager;
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
+                return $this->entityManager;
             }
         }
     ?>
@@ -357,57 +290,247 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
     <?php
         require_once "vendor/autoload.php";
 
-        use phpcore\models\DataContext;
+        use phpcore\services\DataService;
 
-        $context = new DataContext();
-        return \Doctrine\ORM\Tools\Console\ConsoleRunner::createHelperSet($context->getEntityManager());
+        $dataService = new DataService();
+        return \Doctrine\ORM\Tools\Console\ConsoleRunner::createHelperSet($dataService->getEntityManager());
     ?>
     ```
     Then run below command
     ```
-    > vendor/bin/doctrine orm:schema-tool:create
+    > "vendor/bin/doctrine" orm:schema-tool:create
     ```
-6. Modify startup file [project folder]/src/server/Startup.php
+6. Create Routes [project folder]/src/server/models/Routes.php
+    ```php
+    <?php
+        namespace phpcore\models;
+
+        use phpcore\core\RouteDefine;
+
+        class Routes {
+            public const paths = array(
+                "getinfo" => array (
+                    RouteDefine::controller => "phpcore\\controllers\\GetInfoController"
+                )
+            );
+        }
+    ?>
+    ```
+7. Modify startup file [project folder]/src/server/Startup.php
     ```php
     <?php
         namespace phpcore;
 
-        use Exception;
         use phpcore\core\App;
-        use phpcore\core\Route;
+        use phpcore\models\Routes;
+        use phpcore\services\DataService;
 
         class Startup extends App {
-            // declare api controllers
-            public $ApiRoutes = array(
-                "namespace" => "phpcore\\controllers\\api\\",
-                "getinfo" => array("controller" => "GetInfoController")
-            );
-            
-            // declare web controllers
-            public $WebRoutes = array();
-            
             public function __construct() {
-                try {
-                    parent::__construct();
-                    $this->Route->setApiRoutes($this->ApiRoutes);
-                    $this->Route->setWebRoutes($this->WebRoutes);
+                parent::__construct();
+                $this->enableCors();
+                $routeService = $this->getService("phpcore\\core\\RouteService");
+                $routeService->setRoutes(Routes::paths);
+                $routeService->mapRoute();
+
+                $this->addService(new DataService());
+                $this->getService("phpcore\\services\\DataService")->initialize();
+            }
+        }
+    ?>
+    ```
+8. Create an API controller [project folder]/src/server/controllers/api/GetInfoController.php
+    ```php
+    <?php
+        namespace phpcore\controllers;
+
+        use Exception;
+        use phpcore\core\ApiController;
+        use phpcore\core\ContentType;
+        use phpcore\core\HttpCodes;
+
+        class GetInfoController extends ApiController {
+            public function get() {
+                $dataService = $this->getApp()->getService("phpcore\\services\\DataService");
+                if (!isset($dataService)) {
+                    throw new Exception("Data service not found", HttpCodes::internalServerError);
                 }
-                catch (Exception $e) {
-                    throw $e;
+                $entityManager = $dataService->getEntityManager();
+                $infoRepository = $entityManager->getRepository("phpcore\\models\\Info");
+                $info = $infoRepository->findAll();
+                if (count($info) > 0) {
+                    ContentType::applicationJson();
+                    printf("{ 'Name': '%s', 'Author': '%s' }", $info[0]->getName(), $info[0]->getAuthor());
                 }
             }
+        }
+    ?>
+    ```
 
-            public function process() {
-                try {
-                    if ($this->Request->IsApi) {
-                        $this->useCors("*");
+## Firebase Jwt authorization
+This example demonstrate authentication with Firebase Jwt.
+1. Follow steps 1 to 3 from Quick start to setup new project.
+2. Modify file [project folder]/composer.json
+    ```json
+    {
+        "name": "thnguyendev/phpcore",
+        "description": "The phpcore framework.",
+        "version": "*",
+        "keywords": ["framework", "phpcore"],
+        "license": "MIT",
+        "type": "project",
+        "autoload": {
+            "psr-4": {
+                "phpcore\\": "src/server"
+            }
+         },
+        "require": {
+            "firebase/php-jwt": "*"
+        }
+    }
+    ```
+    Run below command in console to update project
+    ```
+    > composer update
+    ```
+3. Create AuthorizationService class [project folder]/src/server/services/AuthorizationService.php
+    ```php
+    <?php
+        namespace phpcore\services;
+
+        use Exception;
+        use phpcore\core\HttpCodes;
+        use phpcore\core\RouteDefine;
+        use Firebase\JWT\JWT;
+
+        class AuthorizationService {
+            private const key = "example_key";
+            private $app;
+
+            public function __construct($app) {
+                $this->app = $app;
+            }
+
+            public function authenticate($input) {
+                $jwt = null;   
+                if ($input->userName === "admin" && $input->password === "nopassword") {
+                    $requestService = $this->app->getService("phpcore\\core\\RequestService");
+                    if (!isset($requestService)) {
+                        throw new Exception("Request service not found", HttpCodes::internalServerError);
                     }
+                    $time = time();
+                    $payload = [
+                        'iss' => $requestService->getServer()["Name"],
+                        'iat' => $time,
+                        'nbf' => $time + 10,
+                        'exp' => $time + 600,
+                        'user' => [
+                            'userName' => $input->userName
+                        ]
+                    ];
+                    $jwt = JWT::encode($payload, $this::key);
+                }
+                return $jwt;
+            }
 
-                    $this->useMvc();
+            public function authorize() {
+                $requestService = $this->app->getService("phpcore\\core\\RequestService");
+                if (!isset($requestService)) {
+                    throw new Exception("Request service not found", HttpCodes::internalServerError);
                 }
-                catch (Exception $e) {
-                    throw $e;
+                $routeService = $this->app->getService("phpcore\\core\\RouteService");
+                if (!isset($routeService)) {
+                    throw new Exception("Route service not found", HttpCodes::internalServerError);
                 }
+                $authorized = true;
+                $route = $routeService->getRoute();
+                if (isset($route)) {
+                    if (isset($route[RouteDefine::authorize]) && $route[RouteDefine::authorize] === true) {
+                        $authorized = false;
+                        if (isset($requestService->getHeader()["Authorization"])) {
+                            list($jwt) = sscanf($requestService->getHeader()["Authorization"], "Bearer %s");
+                            if ($jwt) {
+                                try {
+                                    $token = JWT::decode($jwt, $this::key, array("HS256"));
+                                    $authorized = true;
+                                }
+                                catch(Exception $e) { }
+                            }
+                        }
+                    }
+                }
+                if (!$authorized) {
+                    throw new Exception("Authorize failed", HttpCodes::unauthorized);
+                }
+            }
+        }
+    ?>
+    ```
+4. Create Routes [project folder]/src/server/models/Routes.php
+    ```php
+    <?php
+        namespace phpcore\models;
+
+        use phpcore\core\RouteDefine;
+
+        class Routes {
+            public const paths = array(
+                "authenticate" => array (
+                    RouteDefine::controller => "phpcore\\controllers\\AuthenticateUserController"
+                ),
+                "getinfo" => array (
+                    RouteDefine::controller => "phpcore\\controllers\\GetInfoController",
+                    RouteDefine::authorize => true
+                )
+            );
+        }
+    ?>
+    ```
+5. Modify startup file [project folder]/src/server/Startup.php
+    ```php
+    <?php
+        namespace phpcore;
+
+        use phpcore\core\App;
+        use phpcore\models\Routes;
+        use phpcore\services\DataService;
+
+        class Startup extends App {
+            public function __construct() {
+                parent::__construct();
+                $this->enableCors();
+                $routeService = $this->getService("phpcore\\core\\RouteService");
+                $routeService->setRoutes(Routes::paths);
+                $routeService->mapRoute();
+
+                $this->addService(new AuthorizationService($this));
+                $this->getService("phpcore\\services\\AuthorizationService")->authorize();
+            }
+        }
+    ?>
+    ```
+6. Create Authenticate User API controller [project folder]/src/server/controllers/api/AuthenticateUserController.php
+    ```php
+    <?php
+        namespace phpcore\controllers;
+
+        use phpcore\core\ApiController;
+        use phpcore\core\ContentType;
+
+        class AuthenticateUserController extends ApiController {
+            public function post() {
+                $requestService = $this->getApp()->getService("phpcore\\core\\RequestService");
+                if (!isset($requestService)) {
+                    throw new Exception("Request service not found", HttpCodes::internalServerError);
+                }
+                $authorizationService = $this->getApp()->getService("phpcore\\services\\AuthorizationService");
+                if (!isset($authorizationService)) {
+                    throw new Exception("Authorization service not found", HttpCodes::internalServerError);
+                }
+                $input = json_decode($requestService->getBody());
+                $jwt = $authorizationService->authenticate($input);
+                ContentType::applicationJson();
+                printf("{ 'token': '%s' }", $jwt);
             }
         }
     ?>
@@ -415,68 +538,17 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
 7. Create an API controller [project folder]/src/server/controllers/api/GetInfoController.php
     ```php
     <?php
-        namespace phpcore\controllers\api;
+        namespace phpcore\controllers;
 
+        use Exception;
         use phpcore\core\ApiController;
+        use phpcore\core\ContentType;
         use phpcore\core\HttpCodes;
-        use phpcore\models\DataContext;
 
         class GetInfoController extends ApiController {
             public function get() {
-                try {
-                    $DataContext = new DataContext();
-                    $DataContext->initialize();
-                    header("Content-Type: application/json");
-                    echo(json_encode($DataContext->findInfo()));
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function options() {
-                try {
-                    HttpCodes::ok();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function post() {
-                try {
-                    HttpCodes::methodNotAllowed();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function put() {
-                try {
-                    HttpCodes::methodNotAllowed();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function delete() {
-                try {
-                    HttpCodes::methodNotAllowed();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function patch() {
-                try {
-                    HttpCodes::methodNotAllowed();
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
+                ContentType::applicationJson();
+                echo("{ 'Name': 'PHP Core', 'Author': 'Hung Thanh Nguyen' }");
             }
         }
     ?>

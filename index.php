@@ -15,21 +15,19 @@
 	//   		rewrite ^(.*)$ /index.php?q=$1;
 	//   	}
 	//   }
-	
-	$App = null;
 
 	try {
 		require_once "vendor/autoload.php";
 
-		session_start();
-
 		require_once("src/server/config.php");
 
-		$AppName = STARTUP;
-		$App = new $AppName();
-		$App->process();
+		$appName = APP_CLASS;
+		$appInstance = new $appName();
+		$appInstance->process();
 	}
-	catch (Exception $e) {
-		$App->ErrorHandler->process($e);
+	catch (Exception $exception) {
+		$errorName = ERROR_CLASS;
+		$errorService = new $errorName();
+		$errorService->process($exception);
 	}
 ?>
