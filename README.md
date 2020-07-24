@@ -70,12 +70,12 @@ phpcore is a tiny MVC framework to develop web-based applications in PHP. It's s
         use phpcore\core\Controller;
 
         class HomeController extends Controller {
-        public $message;
-        public function process() {
-            $this->message = "Welcome to PHP Core";
-            $this->view();
-        }
-    }
+			public $message;
+			public function process() {
+				$this->message = "Welcome to PHP Core";
+				$this->view();
+			}
+		}
     ?>
     ```
 6. Create a view for HomeController [project folder]/src/server/views/Home.php
