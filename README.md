@@ -493,7 +493,7 @@ This example demonstrate authentication with Firebase Jwt.
 
         use phpcore\core\App;
         use phpcore\models\Routes;
-        use phpcore\services\DataService;
+        use phpcore\services\AuthorizationService;
 
         class Startup extends App {
             public function __construct() {
