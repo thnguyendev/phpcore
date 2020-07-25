@@ -85,7 +85,7 @@ phpcore is a tiny MVC framework to develop web-based applications in PHP. It's s
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PHP Core</title>
+        <title>Phpcore</title>
     </head>
     <body>
         <h1><?php echo $this->message; ?></h1>
