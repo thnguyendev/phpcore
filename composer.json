@@ -2,12 +2,21 @@
     "name": "thnguyendev/phpcore",
     "description": "The phpcore framework",
     "version": "3.0.0",
-    "keywords": ["framework", "phpcore"],
+    "keywords": ["phpcore", "framework", "mvc", "oop"],
     "license": "MIT",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "phpcore\\": "src/server"
+            "phpcore\\": "src/phpcore",
+            "psr\\": "src/psr",
+			"app\\": "src/app"
         }
+    },
+	"require": {
+        "php": "^7.0.0",
+        "psr/http-message": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
     }
 }

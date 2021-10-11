@@ -72,7 +72,7 @@ phpcore is a tiny MVC framework to develop web-based applications in PHP. It's s
         class HomeController extends Controller {
 			public $message;
 			public function process() {
-				$this->message = "Welcome to Phpcore";
+				$this->message = "Welcome to PHP Core";
 				$this->view();
 			}
 		}
@@ -85,7 +85,7 @@ phpcore is a tiny MVC framework to develop web-based applications in PHP. It's s
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Phpcore</title>
+        <title>PHP Core</title>
     </head>
     <body>
         <h1><?php echo $this->message; ?></h1>
@@ -142,7 +142,7 @@ Steps to create a Web API with phpcore framework.
         class GetInfoController extends ApiController {
             public function get() {
                 ContentType::applicationJson();
-                echo("{ 'Name': 'Phpcore', 'Author': 'Hung Thanh Nguyen' }");
+                echo("{ 'Name': 'PHP Core', 'Author': 'Hung Thanh Nguyen' }");
             }
         }
     ?>
@@ -268,7 +268,7 @@ This example will create a Web API that returns data from SQLite with Doctrine, 
                     $info = $infoRepository->findAll();
                     if (count($info) == 0) {
                         $newInfo = new Info();
-                        $newInfo->setName("Phpcore");
+                        $newInfo->setName("PHP Core");
                         $newInfo->setAuthor("Hung Thanh Nguyen");
                         $this->entityManager->persist($newInfo);
                         $this->entityManager->flush();
@@ -548,7 +548,7 @@ This example demonstrate authentication with Firebase Jwt.
         class GetInfoController extends ApiController {
             public function get() {
                 ContentType::applicationJson();
-                echo("{ 'Name': 'Phpcore', 'Author': 'Hung Thanh Nguyen' }");
+                echo("{ 'Name': 'PHP Core', 'Author': 'Hung Thanh Nguyen' }");
             }
         }
     ?>
