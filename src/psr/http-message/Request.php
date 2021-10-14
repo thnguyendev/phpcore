@@ -1,5 +1,5 @@
 <?php
-    namespace psr;
+    namespace Psr\Http\Message;
 
     use Psr\Http\Message\RequestInterface;
     use Psr\Http\Message\UriInterface;

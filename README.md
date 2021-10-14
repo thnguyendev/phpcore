@@ -553,3 +553,8 @@ This example demonstrate authentication with Firebase Jwt.
         }
     ?>
     ```
+## Firebase jwt authorization
+Run the unit tests
+    ```
+    > ./vendor/bin/phpunit tests
+    ```

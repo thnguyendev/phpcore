@@ -1,5 +1,5 @@
 <?php
-    namespace psr;
+    namespace Psr\Http\Message;
 
     class ErrorMessage {
         /* Message */

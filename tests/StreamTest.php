@@ -1,6 +1,6 @@
 <?php
     use PHPUnit\Framework\TestCase;
-    use psr\Stream;
+    use Psr\Http\Message\Stream;
 
     class StreamTest extends TestCase {
         public function testInvalidResource(): void {

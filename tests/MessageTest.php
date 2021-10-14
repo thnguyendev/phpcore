@@ -1,6 +1,6 @@
 <?php
     use PHPUnit\Framework\TestCase;
-    use psr\Message;
+    use Psr\Http\Message\Message;
 
     class MessageTest extends TestCase {
         public function testProtocolVersion() {
