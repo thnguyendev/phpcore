@@ -1,9 +1,6 @@
 <?php
     namespace Psr\Http\Message;
 
-    use Psr\Http\Message\RequestInterface;
-    use Psr\Http\Message\UriInterface;
-
     class Request extends Message implements RequestInterface {
         private $requestTarget = null;
         private $uri = null;

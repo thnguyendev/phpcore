@@ -1,8 +1,6 @@
 <?php
     namespace Psr\Http\Message;
 
-    use Psr\Http\Message\ServerRequestInterface;
-
     class ServerRequest extends Request implements ServerRequestInterface {
         private $cookies = null;
         private $parsedBody = null;

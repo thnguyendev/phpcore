@@ -1,9 +1,6 @@
 <?php
     namespace Psr\Http\Message;
 
-    use Psr\Http\Message\MessageInterface;
-    use Psr\Http\Message\StreamInterface;
-
     class Message implements MessageInterface {
         /* @var string */ 
         private string $protocolVersion;

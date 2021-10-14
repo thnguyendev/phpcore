@@ -1,8 +1,6 @@
 <?php
     namespace Psr\Http\Message;
 
-    use Psr\Http\Message\ResponseInterface;
-
     class Response extends Message implements ResponseInterface {
         private $statusCode = 200;
         private $reasonPhrase = '';

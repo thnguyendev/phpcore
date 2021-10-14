@@ -1,8 +1,6 @@
 <?php
     namespace Psr\Http\Message;
 
-    use Psr\Http\Message\UriInterface;
-
     class Uri implements UriInterface {
         private $scheme = '';
         private $user = '';

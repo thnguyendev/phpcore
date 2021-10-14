@@ -1,8 +1,6 @@
 <?php
     namespace Psr\Http\Message;
 
-    use Psr\Http\Message\StreamInterface;
-
     class Stream implements StreamInterface {
         private const READABLE = [
             'r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'
