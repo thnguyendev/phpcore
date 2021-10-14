@@ -1,5 +1,5 @@
-# phpcore 3.0.0
-phpcore is a tiny MVC framework to develop web-based applications in PHP. It's simple and easy to use.
+# phpcore 4.0.0
+phpcore is a tiny PHP framework. It aims to be simple and easy to use.
 
 ## Quick start
 1. Download and install Composer by the following url https://getcomposer.org/download/
@@ -7,6 +7,7 @@ phpcore is a tiny MVC framework to develop web-based applications in PHP. It's s
     ```
     > composer create-project thnguyendev/phpcore [project folder]
     > cd [project folder]
+    > composer update
     ```
 3. Configure web server
     * Apache server
