@@ -13,12 +13,21 @@
 
         public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
         {
-            $resource = fopen($filename, $mode);
-            return new Stream($resource);
+            try
+            {
+                $resource = fopen($filename, $mode);
+                return new Stream($resource);
+            }
+            catch (\Throwable $e)
+            {
+                throw new \RuntimeException("Unable to open $filename using mode $mode: $e->getMessage()");
+            }
         }
 
         public function createStreamFromResource($resource): StreamInterface
         {
+            if (!is_resource($resource))
+                throw new \InvalidArgumentException(ErrorMessage::invalidHandle);
             return new Stream($resource);
         }
     }
