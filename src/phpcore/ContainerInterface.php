@@ -3,9 +3,9 @@
 
     interface ContainerInterface
     {
-        public function withSingleton($id, $entry);
-        public function withTransient($id, $entry);
-        public function get($id);
-        public function has($id);
+        public function withSingleton(string $id, string|object $entry);
+        public function withTransient(string $id, string $entry);
+        public function get(string $id);
+        public function has(string $id);
     }
 ?>

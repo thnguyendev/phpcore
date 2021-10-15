@@ -3,12 +3,12 @@
 
     abstract class Enum
     {
-        final private function __construct()
+        private function __construct()
         {
             throw new \BadFunctionCallException();
         }
 
-        final private function __clone()
+        private function __clone()
         {
             throw new \BadFunctionCallException();
         }
