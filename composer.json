@@ -2,7 +2,7 @@
     "name": "thnguyendev/phpcore",
     "description": "The PHPCore framework",
     "version": "4.0.0",
-    "keywords": ["PHPCore", "framework", "mvc", "oop", "psr"],
+    "keywords": ["PHPCore", "framework", "MVC", "OOP", "psr"],
     "license": "MIT",
     "type": "project",
     "autoload": {

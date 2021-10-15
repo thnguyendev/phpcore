@@ -1,5 +1,5 @@
 <?php
-    namespace phpcore;
+    namespace PHPCore;
 
     abstract class App
     {
