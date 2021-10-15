@@ -1,18 +1,18 @@
 <?php
-    namespace App;
+namespace App;
 
-    use PHPCore\App;
-    
-    class Bootstrap extends App
+use PHPCore\App;
+
+class Bootstrap extends App
+{
+    public function initialize()
     {
-        public function initialize()
-        {
-            
-        }
-
-        public function process()
-        {
-            
-        }
+        
     }
+
+    public function process()
+    {
+        
+    }
+}
 ?>

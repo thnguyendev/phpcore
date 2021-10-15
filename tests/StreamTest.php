@@ -1,14 +1,14 @@
 <?php
-    use PHPUnit\Framework\TestCase;
-    use Psr\Http\Message\Stream;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\Stream;
 
-    class StreamTest extends TestCase
+class StreamTest extends TestCase
+{
+    public function testInvalidResource(): void
     {
-        public function testInvalidResource(): void
-        {
-            $handle = "not a resource";
-            $this->expectException(InvalidArgumentException::class);
-            $stream = new Stream($handle);
-        }
+        $handle = "not a resource";
+        $this->expectException(InvalidArgumentException::class);
+        $stream = new Stream($handle);
     }
+}
 ?>

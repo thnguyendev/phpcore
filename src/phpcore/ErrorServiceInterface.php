@@ -1,7 +1,8 @@
 <?php
-    namespace PHPCore;
+namespace PHPCore;
 
-    interface ErrorServiceInterface {
-        public function process(\Throwable $e);
-    }
+interface ErrorServiceInterface
+{
+    public function process(\Throwable $e);
+}
 ?>
