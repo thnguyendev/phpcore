@@ -3,14 +3,20 @@
 
     class ServerRequest extends Request implements ServerRequestInterface
     {
+        private $serverParams = null;
         private $cookies = null;
         private $parsedBody = null;
         private $uploadedFiles;
         private $attributes = [];
 
+        public function __construct($serverParams = [])
+        {
+            $this->serverParams = $serverParams;
+        }
+
         public function getServerParams()
         {
-            return $_SERVER;
+            return $this->serverParams;
         }
 
         public function getCookieParams()

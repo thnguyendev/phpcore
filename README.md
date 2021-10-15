@@ -1,5 +1,5 @@
 # PHPCore 4.0.0
-PHPCore is a PHP framework. It aims to be simple and easy to use.
+PHPCore is a PHP framework. It aims to be simple and easy to use. It implements PSR-7 HTTP message interfaces and PSR-17 HTTP Factories. It also supports dependency injection.
 
 ## Quick start
 1. Download and install Composer by the following url https://getcomposer.org/download/

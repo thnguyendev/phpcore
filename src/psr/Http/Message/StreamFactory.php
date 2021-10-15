@@ -5,17 +5,21 @@
     {
         public function createStream(string $content = ''): StreamInterface
         {
-            return new Stream(null);
+            $resource = tmpfile();
+            fwrite($resource, $content);
+            fseek($resource, 0);
+            return new Stream($resource);
         }
 
         public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
         {
-            return new Stream(null);
+            $resource = fopen($filename, $mode);
+            return new Stream($resource);
         }
 
         public function createStreamFromResource($resource): StreamInterface
         {
-            return new Stream(null);
+            return new Stream($resource);
         }
     }
 ?>

@@ -11,6 +11,22 @@
         private $name;
         private $type;
 
+        public function __construct
+        (
+            StreamInterface $stream,
+            int $size = null,
+            int $error = \UPLOAD_ERR_OK,
+            string $clientFilename = null,
+            string $clientMediaType = null
+        )
+        {
+            $this->stream = $stream;
+            $this->size = $size;
+            $this->error = $error;
+            $this->name = $clientFilename;
+            $this->type = $clientMediaType;
+        }
+
         public function getStream()
         {
             if ($this->moved)

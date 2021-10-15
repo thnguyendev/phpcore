@@ -12,7 +12,9 @@
             string $clientMediaType = null
         ) : UploadedFileInterface
         {
-            return new UploadedFile();
+            if (!$stream->isReadable())
+                throw new \InvalidArgumentException("Stream must be readable");
+            return new UploadedFile($stream. $size, $error, $clientFilename, $clientMediaType);
         }
     }
 ?>

@@ -5,7 +5,16 @@
     {
         public function createRequest(string $method, $uri): RequestInterface
         {
-            return new Request();
+            if (!is_string($uri) && !$uri instanceof UriInterface)
+                throw new \InvalidArgumentException("Uri must be a string or an instance of UriInterface");
+            if (is_string($uri))
+                return (new Request())
+                    ->withMethod($method)
+                    ->withUri((new UriFactory())->createUri($uri));
+            else
+                return (new Request())
+                    ->withMethod($method)
+                    ->withUri($uri);
         }
     }
 ?>

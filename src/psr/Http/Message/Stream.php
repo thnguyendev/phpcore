@@ -14,7 +14,6 @@
 
         /* @var resource */ 
         private $handle;
-
         /* @var array */
         private $metadata = [];
 
