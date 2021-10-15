@@ -7,7 +7,7 @@
         {
             $resource = tmpfile();
             fwrite($resource, $content);
-            fseek($resource, 0);
+            rewind($resource);
             return new Stream($resource);
         }
 
@@ -27,7 +27,7 @@
         public function createStreamFromResource($resource): StreamInterface
         {
             if (!is_resource($resource))
-                throw new \InvalidArgumentException(ErrorMessage::invalidHandle);
+                throw new \InvalidArgumentException("Invalid resource");
             return new Stream($resource);
         }
     }
