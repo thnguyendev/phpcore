@@ -1,5 +1,5 @@
 <?php
-    namespace Phpcore;
+    namespace PHPCore;
 
     abstract class Enum
     {
