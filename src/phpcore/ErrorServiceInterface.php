@@ -1,9 +1,7 @@
 <?php
     namespace phpcore;
 
-    use Exception;
-
     interface ErrorServiceInterface {
-        public function process(Exception $exception);
+        public function process(\Throwable $e);
     }
 ?>

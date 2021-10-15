@@ -1,12 +1,14 @@
 <?php
     namespace Psr\Http\Message;
 
-    class Request extends Message implements RequestInterface {
+    class Request extends Message implements RequestInterface
+    {
         private $requestTarget = null;
         private $uri = null;
         private $method;
 
-        public function getRequestTarget() {
+        public function getRequestTarget()
+        {
             if ($this->requestTarget)
                 return $this->requestTarget;    
             if ($this->uri === null)
@@ -17,7 +19,8 @@
             return $query ? $path . '?' . $query : $path;
         }
 
-        public function withRequestTarget($requestTarget) {
+        public function withRequestTarget($requestTarget)
+        {
             if (preg_match('#\s#', $requestTarget))
                 throw new \InvalidArgumentException(ErrorMessage::invalideRequestTarget);
             $clone = clone $this;
@@ -25,11 +28,13 @@
             return $clone;
         }
 
-        public function getMethod() {
+        public function getMethod()
+        {
             return $this->method;
         }
 
-        public function withMethod($method) {
+        public function withMethod($method)
+        {
             if (!is_string($method) || preg_match('/^[!#$%&\'*+.^_`|~0-9a-z-]+$/i', $method) !== 1)
                 throw new \InvalidArgumentException(ErrorMessage::unsupportedMethod);
             $clone = clone $this;
@@ -37,11 +42,13 @@
             return $clone;
         }
 
-        public function getUri() {
+        public function getUri()
+        {
             return $this->uri;
         }
 
-        public function withUri(UriInterface $uri, $preserveHost = false) {
+        public function withUri(UriInterface $uri, $preserveHost = false)
+        {
             $name = 'Host';
             $clone = clone $this;
             $host = $uri->getHost();

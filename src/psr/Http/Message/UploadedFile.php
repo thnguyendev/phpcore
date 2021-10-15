@@ -1,7 +1,8 @@
 <?php
     namespace Psr\Http\Message;
 
-    class UploadedFile implements UploadedFileInterface {
+    class UploadedFile implements UploadedFileInterface
+    {
         private $file;
         private $stream = null;
         private $moved = false;
@@ -10,11 +11,8 @@
         private $name;
         private $type;
 
-        // todo: constructor get client filename from $_FILES[uploadFile][names]
-        public function __construct(string $clientFilename) {
-        }
-
-        public function getStream() {
+        public function getStream()
+        {
             if ($this->moved)
                 throw new \RuntimeException(ErrorMessage::noStreamAvailable);
             if (!$this->stream) {
@@ -25,7 +23,8 @@
             return $this->stream;
         }
 
-        public function moveTo($targetPath) {
+        public function moveTo($targetPath)
+        {
             if (!is_string($targetPath))
                 throw new \InvalidArgumentException(ErrorMessage::invalidTargetPath);
             if ($this->moved)
@@ -38,19 +37,23 @@
                 throw new \RuntimeException(ErrorMessage::errorMoving);
         }
 
-        public function getSize() {
+        public function getSize()
+        {
             return $this->size;
         }
 
-        public function getError() {
+        public function getError()
+        {
             return $this->error;
         }
 
-        public function getClientFilename() {
+        public function getClientFilename()
+        {
             return $this->name;
         }
 
-        public function getClientMediaType() {
+        public function getClientMediaType()
+        {
             return $this->type;
         }
     }

@@ -10,22 +10,25 @@
 	//   RewriteRule ^(.*)$ index.php/$1 [QSA,NC,L]
 	// Nginx: modify nginx.conf as following:
 	//   location / {
-	//   	index  index.html index.htm index.php;
-	//   	try_files $uri $uri/ /index.php$is_args$args;
-	//   	}
-	//   }
+	//		rewrite ^/(.*)/$ /$1 permanent;
+	//		try_files $uri $uri/ /index.php$is_args$args;
+	//	}
 
-	use app\Startup;
+	use app\Bootstrap;
+	use phpcore\ErrorService;
+	use phpcore\ErrorServiceInterface;
 
-	try {
+	try
+	{
 		require_once(sprintf("%s/../vendor/autoload.php", __DIR__));
 
-		$appInstance = new Startup();
+		$appInstance = new Bootstrap();
+		$appInstance->initialize();
 		$appInstance->process();
 	}
-	catch (Exception $exception) {
-		$errorName = ERROR_CLASS;
-		$errorService = new $errorName();
-		$errorService->process($exception);
+	catch (Throwable $e)
+	{
+		$errorService = new ErrorService();
+		$errorService->process($e);
 	}
 ?>

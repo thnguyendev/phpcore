@@ -2,13 +2,16 @@
     use PHPUnit\Framework\TestCase;
     use Psr\Http\Message\Message;
 
-    class MessageTest extends TestCase {
-        public function testProtocolVersion() {
+    class MessageTest extends TestCase
+    {
+        public function testProtocolVersion()
+        {
             $message = new Message();
             $this->assertSame("1.0", $message->withProtocolVersion("1.0")->getProtocolVersion());
         }
 
-        public function testHeaders() {
+        public function testHeaders()
+        {
             $message = new Message();
             $message = $message->withHeader("String", "value");
             $this->assertNotEmpty($message->getHeaders());

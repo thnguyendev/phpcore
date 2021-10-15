@@ -1,7 +1,8 @@
 <?php
     namespace Psr\Http\Message;
 
-    class ErrorMessage {
+    class ErrorMessage
+    {
         /* Message */
         const invalidHeaderName = 'Header name must be a string complies with RFC 7230';
         const invalidHeaderValue = 'Header value must be an array of strings comply with RFC 7230';

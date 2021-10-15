@@ -2,11 +2,13 @@
     namespace Psr\Http\Message;
 
     class Stream implements StreamInterface {
-        private const READABLE = [
+        private const READABLE = 
+        [
             'r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'
         ];
 
-        private const WRITABLE = [
+        private const WRITABLE = 
+        [
             'w', 'w+', 'rw', 'r+', 'x+', 'c+', 'wb', 'w+b', 'r+b', 'x+b', 'c+b', 'w+t', 'r+t', 'x+t', 'c+t', 'a', 'a+'
         ];
 
@@ -21,41 +23,50 @@
          * @param resource $handle
          * @throws \InvalidArgumentException for invalid handle
          */
-        public function __construct($handle) {
+        public function __construct($handle)
+        {
             if (!is_resource($handle))
                 throw new \InvalidArgumentException(ErrorMessage::invalidHandle);
             $this->handle = $handle;
             $this->metadata = stream_get_meta_data($handle);
         }
 
-        public function __toString() {
-            if (isset($this->handle)) {
+        public function __toString()
+        {
+            if (isset($this->handle))
+            {
                 if ($this->isSeekable())
                     $this->seek(0);
             }
             return $this->getContents();
         }
 
-        public function close() {
-            if (isset($this->handle)) {
+        public function close()
+        {
+            if (isset($this->handle))
+            {
                 fclose($this->handle);
                 unset($this->handle);
                 unset($this->metadata);
             }
         }
 
-        public function detach() {
+        public function detach()
+        {
             $handle = $this->handle;
-            if (isset($this->handle)) {
+            if (isset($this->handle))
+            {
                 unset($this->handle);
                 unset($this->metadata);
             }
             return $handle;
         }
 
-        public function getSize() {
+        public function getSize()
+        {
             $size = null;
-            if (isset($this->handle)) {
+            if (isset($this->handle))
+            {
                 if (isset($this->metadata['uri']))
                     clearstatcache(true, $this->metadata['uri']);
                 $stat = fstat($this->handle);
@@ -65,7 +76,8 @@
             return $size;
         }
 
-        public function tell() {
+        public function tell()
+        {
             $position = ftell($this->handle);
             if ($position === false) {
                 throw new \RuntimeException(ErrorMessage::invalidPointer);
@@ -73,34 +85,39 @@
             return $position;
         }
 
-        public function eof() {
+        public function eof()
+        {
             return feof($this->handle);
         }
 
-        public function isSeekable() {
+        public function isSeekable()
+        {
             $seekable = false;
             if (isset($this->metadata['seekable']))
                 $seekable = $this->metadata['seekable'];
             return $seekable;
         }
 
-        public function seek($offset, $whence = SEEK_SET) {
+        public function seek($offset, $whence = SEEK_SET)
+        {
             if (!$this->isSeekable())
                 throw new \RuntimeException(ErrorMessage::unseekable);
-            if (fseek($this->handle, $offset, $whence) === -1) {
+            if (fseek($this->handle, $offset, $whence) === -1)
                 throw new \RuntimeException(sprintf(ErrorMessage::failedSeeking, $offset, $whence));
-            }
         }
 
-        public function rewind() {
+        public function rewind()
+        {
             $this->seek(0);
         }
 
-        public function isWritable() {
+        public function isWritable()
+        {
             return in_array($this->metadata['mode'], self::WRITABLE);
         }
 
-        public function write($string) {
+        public function write($string)
+        {
             if (!$this->isWritable())
                 throw new \RuntimeException(ErrorMessage::unwritable);
             $written = fwrite($this->handle, $string);
@@ -109,11 +126,13 @@
             return $written;
         }
 
-        public function isReadable() {
+        public function isReadable()
+        {
             return in_array($this->metadata['mode'], self::READABLE);
         }
 
-        public function read($length) {
+        public function read($length)
+        {
             if (!$this->isReadable())
                 throw new \RuntimeException(ErrorMessage::unreadable);
             $read = fread($this->handle, $length);
@@ -122,7 +141,8 @@
             return $read;
         }
 
-        public function getContents() {
+        public function getContents()
+        {
             if (!$this->isReadable())
                 throw new \RuntimeException(ErrorMessage::unreadable);
             $contents = stream_get_contents($this->handle);
@@ -131,7 +151,8 @@
             return $contents;
         }
 
-        public function getMetadata($key = null) {
+        public function getMetadata($key = null)
+        {
             $metadata = null;
             if ($key === null)
                 $metadata = $this->metadata;

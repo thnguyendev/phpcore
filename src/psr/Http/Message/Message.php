@@ -1,35 +1,39 @@
 <?php
     namespace Psr\Http\Message;
 
-    class Message implements MessageInterface {
+    class Message implements MessageInterface
+    {
         /* @var string */ 
         private string $protocolVersion;
-
         /* @var string[][] */
         private $headers = [];
-
         /* @var StreamInterface */
         private StreamInterface $body;
 
-        public function getProtocolVersion() {
+        public function getProtocolVersion()
+        {
             return $this->protocolVersion;
         }
 
-        public function withProtocolVersion($version) {
+        public function withProtocolVersion($version)
+        {
             $clone = clone $this;
             $clone->protocolVersion = $version;
             return $clone;
         }
 
-        public function getHeaders() {
+        public function getHeaders()
+        {
             return $this->headers;
         }
 
-        public function hasHeader($name) {
+        public function hasHeader($name)
+        {
             return isset($this->headers[strtolower($name)]);
         }
 
-        public function getHeader($name) {
+        public function getHeader($name)
+        {
             $value = [];
             $normalized = strtolower($name);
             if (isset($this->headers[$normalized]))
@@ -37,11 +41,13 @@
             return $value;
         }
 
-        public function getHeaderLine($name) {
+        public function getHeaderLine($name)
+        {
             return implode(',', $this->getHeader($name));
         }
 
-        public function withHeader($name, $value) {
+        public function withHeader($name, $value)
+        {
             $this->validateHeader($name, $value);
             $normalized = strtolower($name);
             $clone = clone $this;
@@ -54,7 +60,8 @@
             return $clone;
         }
 
-        public function withAddedHeader($name, $value) {
+        public function withAddedHeader($name, $value)
+        {
             $this->validateHeader($name, $value);
             $normalized = strtolower($name);
             $clone = clone $this;
@@ -67,7 +74,8 @@
             return $clone;
         }
 
-        public function withoutHeader($name) {
+        public function withoutHeader($name)
+        {
             $normalized = strtolower($name);
             $clone = clone $this;
             if (isset($clone->headers[$normalized]))
@@ -75,11 +83,13 @@
             return $clone;
         }
 
-        public function getBody() {
+        public function getBody()
+        {
             return $this->body;
         }
 
-        public function withBody(StreamInterface $body) {
+        public function withBody(StreamInterface $body)
+        {
             if (!$body instanceof StreamInterface)
                 throw new \InvalidArgumentException(ErrorMessage::invalidBody);
             $clone = clone $this;
@@ -87,13 +97,16 @@
             return $clone;
         }
 
-        private function validateHeader($name, $value) {
+        private function validateHeader($name, $value)
+        {
             if (!is_string($name) || empty($name))
                 throw new \InvalidArgumentException(ErrorMessage::invalidHeaderName);
             if ((!is_string($value) && !is_array($value)) || empty($value))
                 throw new \InvalidArgumentException(ErrorMessage::invalidHeaderValue);
-            if (is_array($value)) {
-                foreach($value as $item) {
+            if (is_array($value))
+            {
+                foreach($value as $item)
+                {
                     if (!is_string($item))
                     throw new \InvalidArgumentException(ErrorMessage::invalidHeaderValue);
                 }

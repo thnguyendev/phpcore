@@ -5,7 +5,8 @@
         private $statusCode = 200;
         private $reasonPhrase = '';
 
-        public static $defaultReasonPhrase = [
+        public static $defaultReasonPhrase =
+        [
             // Informational 1xx
             100 => 'Continue',
             101 => 'Switching Protocols',
@@ -80,19 +81,21 @@
             511 => 'Network Authentication Required',
         ];
 
-        public function getStatusCode() {
+        public function getStatusCode()
+        {
             return $this->statusCode;
         }
 
-        public function withStatus($code, $reasonPhrase = '') {
+        public function withStatus($code, $reasonPhrase = '')
+        {
             if (!is_int($code) || $code < 100 || $code > 999)
                 throw new \InvalidArgumentException(ErrorMessage::invalidStatusCode);
             $clone = clone $this;
             $clone->statusCode = $code;
-            if (is_string($reasonPhrase) && $reasonPhrase !== '') {
+            if (is_string($reasonPhrase) && $reasonPhrase !== '')
                 $clone->reasonPhrase = $reasonPhrase;
-            }
-            else {
+            else
+            {
                 if (key_exists($this->statusCode, static::$defaultReasonPhrase))
                     $clone->reasonPhrase = static::$defaultReasonPhrase[$this->statusCode];
                 else
@@ -101,7 +104,8 @@
             return $clone;
         }
 
-        public function getReasonPhrase() {
+        public function getReasonPhrase()
+        {
             return $this->reasonPhrase;
         }
     }
