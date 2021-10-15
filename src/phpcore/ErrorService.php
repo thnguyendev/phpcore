@@ -1,5 +1,5 @@
 <?php
-    namespace phpcore;
+    namespace Phpcore;
 
     class ErrorService implements ErrorServiceInterface {
         public function process(\Throwable $e) {

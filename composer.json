@@ -1,15 +1,15 @@
 {
     "name": "thnguyendev/phpcore",
-    "description": "The phpcore framework",
+    "description": "The PHPCore framework",
     "version": "4.0.0",
-    "keywords": ["phpcore", "framework", "mvc", "oop", "psr"],
+    "keywords": ["PHPCore", "framework", "mvc", "oop", "psr"],
     "license": "MIT",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "phpcore\\": "src/phpcore",
-            "Psr\\": "src/psr",
-			"app\\": "src/app"
+            "App\\": "src/app",
+            "PHPCore\\": "src/phpcore",
+            "Psr\\": "src/psr"
         }
     },
 	"require": {

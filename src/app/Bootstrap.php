@@ -1,7 +1,7 @@
 <?php
-    namespace app;
+    namespace App;
 
-    use phpcore\App;
+    use PHPCore\App;
     
     class Bootstrap extends App
     {

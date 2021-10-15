@@ -1,5 +1,5 @@
 <?php
-    namespace phpcore;
+    namespace Phpcore;
 
     class Container implements ContainerInterface
     {

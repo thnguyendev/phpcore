@@ -1,5 +1,5 @@
 <?php
-    namespace phpcore;
+    namespace PHPCore;
 
     class NotFoundException extends \Exception { }
 ?>

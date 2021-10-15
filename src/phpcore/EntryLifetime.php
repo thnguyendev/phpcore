@@ -1,5 +1,5 @@
 <?php
-    namespace phpcore;
+    namespace Phpcore;
 
     final class EntryLifetime extends Enum
     {

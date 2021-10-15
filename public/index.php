@@ -1,5 +1,5 @@
 <?php
-	// PHP Core
+	// PHPCore
 	// Author: Hung Thanh Nguyen
 
 	// Web server configurations
@@ -14,9 +14,9 @@
 	//		try_files $uri $uri/ /index.php$is_args$args;
 	//	}
 
-	use app\Bootstrap;
-	use phpcore\ErrorService;
-	use phpcore\ErrorServiceInterface;
+	use App\Bootstrap;
+	use PHPCore\ErrorService;
+	use PHPCore\ErrorServiceInterface;
 
 	try
 	{
