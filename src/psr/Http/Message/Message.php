@@ -97,7 +97,7 @@ class Message implements MessageInterface
         return $clone;
     }
 
-    private function validateHeader($name, $value)
+    protected function validateHeader($name, $value)
     {
         if (!is_string($name) || empty($name))
             throw new \InvalidArgumentException(ErrorMessage::invalidHeaderName);

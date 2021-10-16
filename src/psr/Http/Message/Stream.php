@@ -2,12 +2,12 @@
 namespace Psr\Http\Message;
 
 class Stream implements StreamInterface {
-    private const READABLE = 
+    protected const READABLE = 
     [
         'r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'
     ];
 
-    private const WRITABLE = 
+    protected const WRITABLE = 
     [
         'w', 'w+', 'rw', 'r+', 'x+', 'c+', 'wb', 'w+b', 'r+b', 'x+b', 'c+b', 'w+t', 'r+t', 'x+t', 'c+t', 'a', 'a+'
     ];

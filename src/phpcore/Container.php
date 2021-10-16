@@ -5,9 +5,9 @@ use InvalidArgumentException;
 
 class Container implements ContainerInterface
 {
-    private $container = [];
+    protected $container = [];
 
-    public function withSingleton(string $id, string|object $entry)
+    public function withSingleton(string $id, string|object $entry, $parameters = [])
     {
         if (!is_string($id))
             throw new InvalidArgumentException("Id must be a string");
@@ -16,6 +16,8 @@ class Container implements ContainerInterface
             throw new InvalidArgumentException("Id must not be empty");
         if (!is_string($entry) && !is_object($entry))
             throw new InvalidArgumentException("Entry must be a string or an object");
+        if (!is_array($parameters))
+            $parameters = [$parameters];
         $clone = clone $this;
         if (is_string($entry))
         {
@@ -25,7 +27,8 @@ class Container implements ContainerInterface
             $clone->container[$id] = array
             (
                 "lifetime" => EntryLifetime::Singleton,
-                "class" => $entry
+                "class" => $entry,
+                "parameters" => $parameters,
             );
         }
         else
@@ -35,13 +38,14 @@ class Container implements ContainerInterface
             $clone->container[$id] = array
             (
                 "lifetime" => EntryLifetime::Singleton,
-                "instance" => $entry
+                "instance" => $entry,
+                "parameters" => $parameters,
             );
         }
         return $clone;
     }
 
-    public function withTransient(string $id, string $entry)
+    public function withTransient(string $id, string $entry, $parameters = [])
     {
         if (!is_string($id))
             throw new InvalidArgumentException("Id must be a string");
@@ -53,11 +57,14 @@ class Container implements ContainerInterface
         $entry = trim($entry);
         if (!class_exists($entry))
             throw new InvalidArgumentException("{$entry} class has not been defined");
+        if (!is_array($parameters))
+            $parameters = [$parameters];
         $clone = clone $this;
         $clone->container[$id] = array
         (
             "lifetime" => EntryLifetime::Transient,
-            "class" => $entry
+            "class" => $entry,
+            "parameters" => $parameters,
         );
         return $clone;
     }
@@ -70,11 +77,11 @@ class Container implements ContainerInterface
         if ($entry["lifetime"] === EntryLifetime::Singleton)
         {
             if (!isset($entry["instance"]))
-                $entry["instance"] = $this->resolve($entry["class"]);
+                $entry["instance"] = $this->resolve($entry["class"], $entry["parameters"]);
             return $entry["instance"];
         }
         else
-            return $this->resolve($entry["class"]);
+            return $this->resolve($entry["class"], $entry["parameters"]);
     }
 
     public function has(string $id)
@@ -85,25 +92,36 @@ class Container implements ContainerInterface
         return isset($this->container[$id]);
     }
 
-    private function resolve(string $class)
+    protected function resolve(string $class, $parameters)
     {
+        if ($class instanceof \Closure) {
+            return $class($this, $parameters);
+        }
         $reflector = new \ReflectionClass($class);
         if (!$reflector->isInstantiable())
             throw new \Exception("Class {$class} is not instantiable");
         $constructor = $reflector->getConstructor();
         if (is_null($constructor))
             return $reflector->newInstance();
-        $parameters = $constructor->getParameters();
+        $params = $constructor->getParameters();
         $dependencies = [];
-        foreach ($parameters as $parameter)
+        foreach ($params as $param)
         {
-            $dependency = $parameter->getType();
+            $dependency = $param->getType();
             if (is_null($dependency))
             {
-                if ($parameter->isDefaultValueAvailable())
-                    $dependencies[] = $parameter->getDefaultValue();
+                if (count($parameters) > 0)
+                {
+                    $dependencies[] = $parameters[0];
+                    $parameters = array_slice($parameters, 1);
+                }
                 else
-                    throw new \Exception("Can not resolve dependency {$parameter->name}");
+                {
+                    if ($param->isDefaultValueAvailable())
+                        $dependencies[] = $param->getDefaultValue();
+                    else
+                        throw new \Exception("Cannot resolve dependency {$param->__toString()}");
+                }
             } 
             else
                 $dependencies[] = ($this->get($dependency->getName()));

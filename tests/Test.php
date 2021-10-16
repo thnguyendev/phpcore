@@ -1,43 +1,32 @@
 <?php
+use PHPCore\Container;
 // Interface definition
 abstract class Animal {
+  protected $legs;
+  public function __construct($legs)
+  {
+    $this->legs = $legs;
+  }
   abstract public function makeSound();
 }
 
-// Class definitions
-class Cat extends Animal {
-  public function makeSound() {
-    echo " Meow ";
-  }
-}
-
 class Dog extends Animal {
+  protected $name;
+  public function __construct($name, $legs)
+  {
+    parent::__construct($legs);
+    $this->name = $name;
+  }
   public function makeSound() {
     echo " Bark ";
   }
 }
 
-class Mouse {
-  public function makeSound() {
-    echo " Squeak ";
-  }
-}
+require_once(sprintf("%s/../vendor/autoload.php", __DIR__));
 
-class Test
-{
-  public $animal;
-  public function __construct(Animal $animal)
-  {
-    $this->animal = $animal;
-  }
-}
-
+$container = new Container();
+$container = $container->withTransient(Animal::class, Dog::class, ["kiki", 4]);
 // Create a list of animals
-$cat = new Cat();
-$dog = new Dog();
-$mouse = new Mouse();
-
-$str = "{123}";
-$length = strlen($str);
-echo "{$str[0]} | {$str[$length - 1]}";
+$dog = $container->get(Animal::class);
+var_dump($dog);
 ?>
