@@ -9,6 +9,10 @@ abstract class App
     protected $services;
     protected $request;
     protected $response;
+    protected $route;
+
+    abstract public function initialize();
+    abstract public function process();
 
     public function __construct
     (
@@ -22,7 +26,9 @@ abstract class App
         $this->response = $response;
     }
 
-    abstract public function initialize();
-    abstract public function process();
+    protected function useRoute(AppRoute $route)
+    {
+        $this->route = $route;
+    }
 }
 ?>
