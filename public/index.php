@@ -40,6 +40,15 @@ try
 	$uriFactory = new UriFactory();
 	$streamFactory = new StreamFactory();
 	$requestFactory = new ServerRequestFactory();
+	$responseFactory = new ResponseFactory();
+	$container = $container
+		->withSingleton(RequestFactoryInterface::class, RequestFactory::class)
+		->withSingleton(ResponseFactoryInterface::class, $responseFactory)
+		->withSingleton(ServerRequestFactoryInterface::class, $requestFactory)
+		->withSingleton(StreamFactoryInterface::class, $streamFactory)
+		->withSingleton(UploadedFileFactoryInterface::class, UploadedFileFactory::class)
+		->withSingleton(UriFactoryInterface::class, $uriFactory)
+		->withSingleton(ErrorServiceInterface::class, ErrorService::class);
 	$request = $requestFactory->createServerRequest(Initialization::getMethod(), "", Initialization::getServerParams())
 		->withProtocolVersion(Initialization::getProtocolVersion())
 		->withQueryParams(Initialization::getQueryParams())
@@ -56,16 +65,7 @@ try
 			->withQuery(Initialization::getQuery()));
 	foreach (Initialization::getHeaders() as $name => $value)
 		$request = $request->withHeader($name, $value);
-	$responseFactory = new ResponseFactory();
 	$response = $responseFactory->createResponse();
-	$container = $container
-		->withSingleton(RequestFactoryInterface::class, RequestFactory::class)
-		->withSingleton(ResponseFactoryInterface::class, $responseFactory)
-		->withSingleton(ServerRequestFactoryInterface::class, $requestFactory)
-		->withSingleton(StreamFactoryInterface::class, $streamFactory)
-		->withSingleton(UploadedFileFactoryInterface::class, UploadedFileFactory::class)
-		->withSingleton(UriFactoryInterface::class, $uriFactory)
-		->withSingleton(ErrorServiceInterface::class, ErrorService::class);
 	$appInstance = new Bootstrap($container, $request, $response);
 	$appInstance->initialize();
 	$appInstance->process();
