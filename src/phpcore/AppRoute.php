@@ -1,8 +1,6 @@
 <?php
 namespace PHPCore;
 
-use function PHPUnit\Framework\stringEndsWith;
-
 abstract class AppRoute
 {
     protected $mapping = [];

@@ -1,8 +1,6 @@
 <?php
 namespace PHPCore;
 
-use InvalidArgumentException;
-
 class Container implements ContainerInterface
 {
     protected $container = [];
@@ -10,12 +8,12 @@ class Container implements ContainerInterface
     public function withSingleton(string $id, string|object $entry, $parameters = [])
     {
         if (!is_string($id))
-            throw new InvalidArgumentException("Id must be a string");
+            throw new \InvalidArgumentException("Id must be a string");
         $id = trim($id);
         if (empty($id))
-            throw new InvalidArgumentException("Id must not be empty");
+            throw new \InvalidArgumentException("Id must not be empty");
         if (!is_string($entry) && !is_object($entry))
-            throw new InvalidArgumentException("Entry must be a string or an object");
+            throw new \InvalidArgumentException("Entry must be a string or an object");
         if (!is_array($parameters))
             $parameters = [$parameters];
         $clone = clone $this;
@@ -23,7 +21,7 @@ class Container implements ContainerInterface
         {
             $entry = trim($entry);
             if (!class_exists($entry))
-                throw new InvalidArgumentException("{$entry} class has not been defined");
+                throw new \InvalidArgumentException("{$entry} class has not been defined");
             $clone->container[$id] = array
             (
                 "lifetime" => EntryLifetime::Singleton,
@@ -34,7 +32,7 @@ class Container implements ContainerInterface
         else
         {
             if (is_null($entry))
-                throw new InvalidArgumentException("Entry must not be null");
+                throw new \InvalidArgumentException("Entry must not be null");
             $clone->container[$id] = array
             (
                 "lifetime" => EntryLifetime::Singleton,
@@ -48,15 +46,15 @@ class Container implements ContainerInterface
     public function withTransient(string $id, string $entry, $parameters = [])
     {
         if (!is_string($id))
-            throw new InvalidArgumentException("Id must be a string");
+            throw new \InvalidArgumentException("Id must be a string");
         $id = trim($id);
         if (empty($id))
-            throw new InvalidArgumentException("Id must not be empty");
+            throw new \InvalidArgumentException("Id must not be empty");
         if (!is_string($entry))
-            throw new InvalidArgumentException("Entry must be a string");
+            throw new \InvalidArgumentException("Entry must be a string");
         $entry = trim($entry);
         if (!class_exists($entry))
-            throw new InvalidArgumentException("{$entry} class has not been defined");
+            throw new \InvalidArgumentException("{$entry} class has not been defined");
         if (!is_array($parameters))
             $parameters = [$parameters];
         $clone = clone $this;
@@ -87,7 +85,7 @@ class Container implements ContainerInterface
     public function has(string $id)
     {
         if (!is_string($id))
-            throw new InvalidArgumentException("Id must be a string");
+            throw new \InvalidArgumentException("Id must be a string");
         $id = trim($id);
         return isset($this->container[$id]);
     }

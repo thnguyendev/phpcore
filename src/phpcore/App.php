@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 abstract class App
 {
-    protected $services;
+    protected $container;
     protected $request;
     protected $response;
     protected $route;
@@ -16,12 +16,12 @@ abstract class App
 
     public function __construct
     (
-        ContainerInterface $services,
+        ContainerInterface $container,
         ServerRequestInterface $request,
         ResponseInterface $response
     )
     {
-        $this->services = $services;
+        $this->container = $container;
         $this->request = $request;
         $this->response = $response;
     }
