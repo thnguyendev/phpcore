@@ -43,18 +43,18 @@ abstract class App
     {
         if (!is_array($route))
             throw new \InvalidArgumentException("Route must be an array", 500);
-        if (!isset($route[AppRoute::RouteController]) || !class_exists($route[AppRoute::RouteController]))
+        if (!isset($route[RouteProperties::Controller]) || !class_exists($route[RouteProperties::Controller]))
             throw new NotFoundException("Controller not found", 404);
-        $controller = new $route[AppRoute::RouteController]();
+        $controller = new $route[RouteProperties::Controller]();
         if (!$controller instanceof Controller)
-            throw new \Exception("{$route[AppRoute::RouteController]} is not a controller", 500);
+            throw new \Exception("{$route[RouteProperties::Controller]} is not a controller", 500);
         $controller = $controller
             ->withRequest($this->request)
             ->withResponse($this->response);
-        if (isset($route[AppRoute::RouteParameters]))
-            $controller = $controller->withParameters($route[AppRoute::RouteParameters]);
-        if (isset($route[AppRoute::RouteView]))
-            $controller = $controller->withView($route[AppRoute::RouteView]);
+        if (isset($route[RouteProperties::Parameters]))
+            $controller = $controller->withParameters($route[RouteProperties::Parameters]);
+        if (isset($route[RouteProperties::View]))
+            $controller = $controller->withView($route[RouteProperties::View]);
         if (isset($bucket))
         {
             if (!is_array($bucket))

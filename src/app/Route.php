@@ -2,6 +2,7 @@
 namespace App;
 
 use PHPCore\AppRoute;
+use PHPCore\RouteProperties;
 
 class Route extends AppRoute
 {
@@ -10,15 +11,15 @@ class Route extends AppRoute
         $this->mapping = 
         [
             [
-                AppRoute::RoutePath => "",
-                AppRoute::RouteController => HomeController::class,
-                AppRoute::RouteView => "HomeView",
+                RouteProperties::Path => "",
+                RouteProperties::Controller => HomeController::class,
+                RouteProperties::View => "HomeView",
             ],
             [
-                AppRoute::RoutePath => "",
-                AppRoute::RouteParameters => ["name"],
-                AppRoute::RouteController => HomeController::class,
-                AppRoute::RouteView => "HomeView",
+                RouteProperties::Path => "",
+                RouteProperties::Parameters => ["name"],
+                RouteProperties::Controller => HomeController::class,
+                RouteProperties::View => "HomeView",
             ],
         ];
     }

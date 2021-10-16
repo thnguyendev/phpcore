@@ -3,21 +3,6 @@ namespace PHPCore;
 
 abstract class AppRoute
 {
-    const GetMethod = "GET";
-    const PostMethod = "POST";
-    const PutMethod = "PUT";
-    const DeleteMethod = "DELETE";
-    const PatchMethod = "PATCH";
-    const OptionsMethod = "OPTIONS";
-
-    const RouteMethods = "Methods";
-    const RoutePath = "Path";
-    const RouteParameters = "Parameters";
-    const RouteController = "Controller";
-    const RouteView = "View";
-    const RouteAuthorized = "Authorized";
-    const RouteRoles = "Roles";
-
     protected $mapping = [];
 
     abstract public function initialize();
@@ -31,20 +16,20 @@ abstract class AppRoute
         $wordCount = count($words);
         foreach ($this->mapping as $value)
         {
-            if (!is_array($value) || !isset($value[static::RoutePath]) || !is_string($value[static::RoutePath]))
+            if (!is_array($value) || !isset($value[RouteProperties::Path]) || !is_string($value[RouteProperties::Path]))
                 continue;
-            if (isset($value[static::RouteMethods]) && !in_array($method, $value[static::RouteMethods]))
+            if (isset($value[RouteProperties::Methods]) && !in_array($method, $value[RouteProperties::Methods]))
                 continue;
-            $trim = trim($value[static::RoutePath], "/");
+            $trim = trim($value[RouteProperties::Path], "/");
             $keys = $trim === "" ? [] : explode("/", $trim);
             $keyCount = count($keys);
             $paramCount = 0;
-            if (isset($value[static::RouteParameters]) && is_array($value[static::RouteParameters]))
-                $paramCount = count($value[static::RouteParameters]);
+            if (isset($value[RouteProperties::Parameters]) && is_array($value[RouteProperties::Parameters]))
+                $paramCount = count($value[RouteProperties::Parameters]);
             if ($keyCount + $paramCount !== $wordCount || ($route !== null && $keyCount <= $count))
                 continue;
             $paths = array_slice($words, 0, $keyCount);
-            if (strtolower(join("/", $paths)) === strtolower(trim($value[static::RoutePath], "/")))
+            if (strtolower(join("/", $paths)) === strtolower(trim($value[RouteProperties::Path], "/")))
             {
                 $params = [];
                 if ($paramCount > 0)
@@ -54,12 +39,12 @@ abstract class AppRoute
                     while ($i < $paramCount)
                     {
                         if (isset($paramValues[$i]))
-                            $params[$value[static::RouteParameters][$i]] = $paramValues[$i];
+                            $params[$value[RouteProperties::Parameters][$i]] = $paramValues[$i];
                         $i++;
                     }
                 }
                 $clone = array_merge(array(), $value);
-                $clone[static::RouteParameters] = $params;
+                $clone[RouteProperties::Parameters] = $params;
                 $route = $clone;
                 $count = $keyCount;
             }
