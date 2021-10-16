@@ -13,9 +13,9 @@ class Stream implements StreamInterface {
     ];
 
     /* @var resource */ 
-    private $handle;
+    protected $handle;
     /* @var array */
-    private $metadata = [];
+    protected $metadata = [];
 
     /*
         * Constructor of a stream

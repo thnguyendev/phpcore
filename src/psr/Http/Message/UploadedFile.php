@@ -3,13 +3,13 @@ namespace Psr\Http\Message;
 
 class UploadedFile implements UploadedFileInterface
 {
-    private $file;
-    private $stream = null;
-    private $moved = false;
-    private $size;
-    private $error;
-    private $name;
-    private $type;
+    protected $file;
+    protected $stream = null;
+    protected $moved = false;
+    protected $size;
+    protected $error;
+    protected $name;
+    protected $type;
 
     public function __construct
     (

@@ -3,11 +3,11 @@ namespace Psr\Http\Message;
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    private $serverParams = null;
-    private $cookies = null;
-    private $parsedBody = null;
-    private $uploadedFiles;
-    private $attributes = [];
+    protected $serverParams = null;
+    protected $cookies = null;
+    protected $parsedBody = null;
+    protected $uploadedFiles;
+    protected $attributes = [];
 
     public function __construct($serverParams = [])
     {

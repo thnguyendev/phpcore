@@ -42,7 +42,7 @@ class Initialization
 
     public static function getMethod()
     {
-        return $_SERVER["REQUEST_METHOD"] ?? null;
+        return $_SERVER["REQUEST_METHOD"] ?? "";
     }
 
     public static function getScheme()
@@ -65,17 +65,23 @@ class Initialization
 
     public static function getHost()
     {
-        return $_SERVER["HTTP_HOST"] ?? "";
+        if (isset($_SERVER["HTTP_HOST"]))
+            return explode(":", $_SERVER["HTTP_HOST"])[0];
+        else
+            return "";
     }
 
     public static function getPort()
     {
-        return intval($_SERVER["SERVER_PORT"]);
+        return isset($_SERVER["SERVER_PORT"]) ? intval($_SERVER["SERVER_PORT"]) : null;
     }
 
     public static function getPath()
     {
-        return $_SERVER["REQUEST_URI"] ?? "";
+        if (isset($_SERVER["REQUEST_URI"]))
+            return explode("?", $_SERVER["REQUEST_URI"])[0];
+        else
+            return "";
     }
 
     public static function getQuery()

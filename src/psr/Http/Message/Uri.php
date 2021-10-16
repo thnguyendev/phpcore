@@ -3,14 +3,14 @@ namespace Psr\Http\Message;
 
 class Uri implements UriInterface
 {
-    private $scheme = '';
-    private $user = '';
-    private $password = null;
-    private $host = '';
-    private $port = null;
-    private $path = '';
-    private $query = '';
-    private $fragment = '';
+    protected $scheme = '';
+    protected $user = '';
+    protected $password = null;
+    protected $host = '';
+    protected $port = null;
+    protected $path = '';
+    protected $query = '';
+    protected $fragment = '';
 
     public const SUPPORTED_SCHEMES = 
     [
@@ -29,7 +29,7 @@ class Uri implements UriInterface
         $user = $this->getUserInfo();
         $port = $this->getPort();
         $authority = $this->getHost();
-        if ($user !== '')
+        if (isset($this->user) && $user !== '')
             $authority = $user . '@' . $authority;
         if ($port !== null)
             $authority = $authority . ':' . $port;

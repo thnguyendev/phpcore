@@ -56,7 +56,6 @@ try
 			->withQuery(Initialization::getQuery()));
 	foreach (Initialization::getHeaders() as $name => $value)
 		$request = $request->withHeader($name, $value);
-	var_dump($request);
 	$responseFactory = new ResponseFactory();
 	$response = $responseFactory->createResponse();
 	$container = $container

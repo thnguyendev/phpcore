@@ -3,9 +3,9 @@ namespace Psr\Http\Message;
 
 class Request extends Message implements RequestInterface
 {
-    private $requestTarget = null;
-    private $uri = null;
-    private $method;
+    protected $requestTarget = null;
+    protected $uri = null;
+    protected $method;
 
     public function getRequestTarget()
     {

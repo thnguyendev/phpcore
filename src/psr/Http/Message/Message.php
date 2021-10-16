@@ -4,11 +4,11 @@ namespace Psr\Http\Message;
 class Message implements MessageInterface
 {
     /* @var string */ 
-    private string $protocolVersion;
+    protected string $protocolVersion;
     /* @var string[][] */
-    private $headers = [];
+    protected $headers = [];
     /* @var StreamInterface */
-    private StreamInterface $body;
+    protected StreamInterface $body;
 
     public function getProtocolVersion()
     {

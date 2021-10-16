@@ -2,8 +2,8 @@
 namespace Psr\Http\Message;
 
 class Response extends Message implements ResponseInterface {
-    private $statusCode = 200;
-    private $reasonPhrase = '';
+    protected $statusCode = 200;
+    protected $reasonPhrase = '';
 
     public static $defaultReasonPhrase =
     [
