@@ -3,7 +3,8 @@ namespace PHPCore;
 
 use Psr\Http\Message\Response;
 
-class ErrorService implements ErrorServiceInterface {
+class ErrorService implements ErrorServiceInterface
+{
     public function process(\Throwable $e)
     {
         $time = date("Y-m-d H:i:s (T)");
