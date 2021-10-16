@@ -1,58 +1,77 @@
 <?php
-	namespace phpcore;
+namespace PHPCore;
 
-	use Exception;
-	
-	class Controller implements ControllerInterface {
-		private AppInterface $app;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-		public function view() {
-			$routeService = $this->app->getService("phpcore\\RouteService");
-			if (!isset($routeService)) {
-				throw new Exception("Route service not found", HttpCodes::internalServerError);
-			}
-			$route = $routeService->getRoute();
-			if (isset($route[RouteDefine::view])) {
-				$view = str_replace("/\\/", "/", $route[RouteDefine::view]);
-				if (file_exists($view))
-					require_once($view);
+abstract class Controller
+{
+	protected $request;
+	protected $response;
+	protected $view = null;
+	protected $parameters;
+	protected $bucket = [];
+
+	abstract public function process();
+
+	public function withRequest(ServerRequestInterface $request)
+	{
+		$clone = clone $this;
+		$clone->request = $request;
+		return $clone;
+	}
+
+	public function withResponse(ResponseInterface $response)
+	{
+		$clone = clone $this;
+		$clone->response = $response;
+		return $clone;
+	}
+
+	public function withParameters(array $parameters)
+	{
+		$clone = clone $this;
+		$clone->parameters = $parameters;
+		return $clone;
+	}
+
+	public function withBucket(array $bucket)
+	{
+		$clone = clone $this;
+		$clone->bucket = $bucket;
+		return $clone;
+	}
+
+	public function withView(string $view)
+	{
+		$clone = clone $this;
+		$clone->view = "/".ltrim(ltrim($view, "/"), "\\");
+		return $clone;
+	}
+
+	public function view()
+	{
+		if (isset($this->view))
+		{
+			$file = App::getAppFolder().$this->view;
+			if (file_exists($file))
+				require_once($file);
+			else
+			{
+				$file .= ".php";
+				if (file_exists($file))
+					require_once($file);
 				else
-					throw new Exception(sprintf("View %s not found", $view), HttpCodes::notFound);
-			}
-		}
+					throw new NotFoundException("View {$this->view} not found", 404);
+			} 
 
-		public function process() {
-			$this->view();
-		}
-
-		public function checkMethod() {
-			$requestService = $this->app->getService("phpcore\\RequestService");
-			if (!isset($requestService)) {
-				throw new Exception("Request service not found", HttpCodes::internalServerError);
-			}
-			$method = $requestService->getRequest()["Method"];
-			if (preg_match("/^OPTIONS$/", $method)) {
-				if ($this->app->allowCors()) {
-					header(sprintf("Access-Control-Allow-Origin: %s", $this->app->getAllowedOrigins()));
-					header(sprintf("Access-Control-Allow-Methods: %s", $this->app->getAllowedMethods()));
-					header(sprintf("Access-Control-Allow-Headers: %s", $this->app->getAllowedHeaders()));
-					HttpCodes::ok();
-				}
-				else {
-					HttpCodes::forbidden();
-				}
-			}
-			else {
-				$this->process();
-			}
-		}
-
-		public function getApp() {
-			return $this->app;
-		}
-
-		public function setApp($app) {
-			$this->app = $app;
 		}
 	}
+
+	public function processRequest()
+	{
+		$this->process();
+		header(Initialization::getProtocol()." {$this->response->getStatusCode()} {$this->response->getReasonPhrase()}", true);
+	}
+}
 ?>

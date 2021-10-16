@@ -1,22 +1,11 @@
 <?php
-	namespace phpcore;
-	
-	class ContentType {
-		
-		public static function applicationJson() {
-			header("Content-Type: application/json");
-		}
+namespace PHPCore;
 
-		public static function textCsv() {
-            header("Content-Type: text/csv");
-        }
-
-        public static function textHtml() {
-            header("Content-Type: text/html");
-        }
-
-        public static function textXml() {
-            header("Content-Type: text/xml");
-        }
-	}
+class ContentType extends Enum
+{
+    const ApplicationJson = "Content-Type: application/json";
+    const TextCsv = "Content-Type: text/csv";
+    const TextHtml = "Content-Type: text/html";
+    const TextXml = "Content-Type: text/xml";
+}
 ?>

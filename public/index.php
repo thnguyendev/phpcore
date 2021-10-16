@@ -35,7 +35,8 @@ use App\Bootstrap;
 $container = null;
 try
 {
-	require_once(sprintf("%s/../vendor/autoload.php", __DIR__));
+	$baseFolder = dirname(dirname(__FILE__));
+	require_once("{$baseFolder}/vendor/autoload.php");
 	$container = new Container();
 	$uriFactory = new UriFactory();
 	$streamFactory = new StreamFactory();
@@ -66,7 +67,7 @@ try
 	foreach (Initialization::getHeaders() as $name => $value)
 		$request = $request->withHeader($name, $value);
 	$response = $responseFactory->createResponse();
-	$appInstance = new Bootstrap($container, $request, $response);
+	$appInstance = new Bootstrap($container, $request, $response, "{$baseFolder}/src/app");
 	$appInstance->initialize();
 	$appInstance->process();
 }

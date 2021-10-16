@@ -9,9 +9,17 @@ class Route extends AppRoute
     {
         $this->mapping = 
         [
-            "/" => [],
-            "product" => ["params" => ["group", "name"]],
-            "product/details" => ["params" => ["id"]]
+            [
+                AppRoute::RoutePath => "",
+                AppRoute::RouteController => HomeController::class,
+                AppRoute::RouteView => "HomeView",
+            ],
+            [
+                AppRoute::RoutePath => "",
+                AppRoute::RouteParameters => ["name"],
+                AppRoute::RouteController => HomeController::class,
+                AppRoute::RouteView => "HomeView",
+            ],
         ];
     }
 }
