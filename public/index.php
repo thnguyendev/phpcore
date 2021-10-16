@@ -29,25 +29,44 @@ use Psr\Http\Message\UriFactoryInterface;
 use PHPCore\ErrorService;
 use PHPCore\ErrorServiceInterface;
 use PHPCore\Container;
+use PHPCore\Initialization;
 use App\Bootstrap;
 
+$container = null;
 try
 {
 	require_once(sprintf("%s/../vendor/autoload.php", __DIR__));
-
+	$container = new Container();
+	$uriFactory = new UriFactory();
+	$streamFactory = new StreamFactory();
 	$requestFactory = new ServerRequestFactory();
-	$request = $requestFactory->createServerRequest($_SERVER["REQUEST_METHOD"], null);
+	$request = $requestFactory->createServerRequest(Initialization::getMethod(), "", Initialization::getServerParams())
+		->withProtocolVersion(Initialization::getProtocolVersion())
+		->withQueryParams(Initialization::getQueryParams())
+		->withBody($streamFactory->createStreamFromFile(Initialization::getBody()))
+		->withParsedBody(Initialization::getParsedBody())
+		->withCookieParams(Initialization::getCookies())
+		->withUploadedFiles(Initialization::getUploadedFiles())
+		->withUri($uriFactory->createUri()
+			->withScheme(Initialization::getScheme())
+			->withUserInfo(Initialization::getUser(), Initialization::getPassword())
+			->withHost(Initialization::getHost())
+			->withPort(Initialization::getPort())
+			->withPath(Initialization::getPath())
+			->withQuery(Initialization::getQuery()));
+	foreach (Initialization::getHeaders() as $name => $value)
+		$request = $request->withHeader($name, $value);
+	var_dump($request);
 	$responseFactory = new ResponseFactory();
 	$response = $responseFactory->createResponse();
-	$container = (new Container())
+	$container = $container
 		->withSingleton(RequestFactoryInterface::class, RequestFactory::class)
 		->withSingleton(ResponseFactoryInterface::class, $responseFactory)
 		->withSingleton(ServerRequestFactoryInterface::class, $requestFactory)
-		->withSingleton(StreamFactoryInterface::class, StreamFactory::class)
+		->withSingleton(StreamFactoryInterface::class, $streamFactory)
 		->withSingleton(UploadedFileFactoryInterface::class, UploadedFileFactory::class)
-		->withSingleton(UriFactoryInterface::class, UriFactory::class)
+		->withSingleton(UriFactoryInterface::class, $uriFactory)
 		->withSingleton(ErrorServiceInterface::class, ErrorService::class);
-
 	$appInstance = new Bootstrap($container, $request, $response);
 	$appInstance->initialize();
 	$appInstance->process();

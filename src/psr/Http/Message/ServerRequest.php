@@ -42,7 +42,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function withQueryParams(array $query)
     {
         $clone = clone $this;
-        if ($clone->uri === null)
+        if (!isset($clone->uri))
             $clone->uri = new Uri();
         $clone->uri = $clone->uri->withQuery(http_build_query($query, encoding_type: PHP_QUERY_RFC3986));
         return $clone;
@@ -67,7 +67,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     public function withParsedBody($data)
     {
-        if (!is_null($data) || !is_object($data) || !is_array($data))
+        if (!is_null($data) && !is_object($data) && !is_array($data))
             throw new \InvalidArgumentException(ErrorMessage::invalidParsedBody);
         $clone = clone $this;
         $clone->parsedBody = $data;

@@ -96,8 +96,8 @@ class Response extends Message implements ResponseInterface {
             $clone->reasonPhrase = $reasonPhrase;
         else
         {
-            if (key_exists($this->statusCode, static::$defaultReasonPhrase))
-                $clone->reasonPhrase = static::$defaultReasonPhrase[$this->statusCode];
+            if (key_exists($clone->statusCode, static::$defaultReasonPhrase))
+                $clone->reasonPhrase = static::$defaultReasonPhrase[$clone->statusCode];
             else
                 $clone->reasonPhrase = '';
         }
