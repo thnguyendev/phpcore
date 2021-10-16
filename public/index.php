@@ -75,7 +75,7 @@ catch (Throwable $e)
 	if ($container->has(ErrorServiceInterface::class))
 		$errorService = $container->get(ErrorServiceInterface::class);
 	else
-		$errorService = new ErrorService(new ResponseFactory());
+		$errorService = new ErrorService();
 	$errorService->process($e);
 }
 ?>
