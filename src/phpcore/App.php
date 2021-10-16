@@ -1,6 +1,7 @@
 <?php
 namespace PHPCore;
 
+use Psr\Http\Message\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -10,6 +11,8 @@ abstract class App
     protected $request;
     protected $response;
     protected $route;
+    protected $allowedOrigins;
+    protected $allowedMethods;
     private static $appFolder;
 
     abstract public function initialize();
@@ -62,6 +65,97 @@ abstract class App
             $controller = $controller->withBucket($bucket);
         }
         return $controller;
+    }
+
+    protected function useHttps()
+    {
+        $uri = $this->request->getUri();
+        if ($uri->getScheme() === "http")
+        {
+            $uri = $uri->withScheme("https");
+            header(Initialization::getProtocol()." 301 ".Response::$defaultReasonPhrase[301], true);
+            header("Location: ".$uri->__toString());
+            exit;
+        }
+    }
+
+    public function processRequest()
+    {
+        $method = $this->request->getMethod();
+        if ($method === HttpMethods::Options)
+            $this->checkCors();
+        else
+            $this->process();
+    }
+
+    protected function allowCors
+    (
+        $origins = "*",
+        $methods = 
+        [
+            HttpMethods::Get,
+            HttpMethods::Post,
+            HttpMethods::Put,
+            HttpMethods::Patch,
+            HttpMethods::Delete,
+        ]
+    )
+    {
+        if (is_string($origins))
+            $origins = [$origins];
+        if (is_string($methods))
+            $methods = [$methods];
+        if (!is_array($origins) || !is_array($methods))
+            throw new \InvalidArgumentException("Origins and methods must be strings or arrays");
+        $this->allowedOrigins = $origins;
+        $this->allowedMethods = $methods;
+    }
+
+    protected function checkCors()
+    {
+        $allowed = true;
+        $method = $this->request->getHeader("Access-Control-Request-Method");
+        if (count($method) > 0)
+        {
+            if (!in_array($method[0], $this->allowedMethods))
+                $allowed = false;
+        }
+        $origin = $this->request->getHeader("Origin");
+        if (count($origin) > 0)
+        {
+            $parts = parse_url($origin[0]);
+            $ori = (isset($parts["scheme"]) ? $parts["scheme"] : "")."://"
+                .(isset($parts["host"]) ? $parts["host"] : "").(isset($parts["port"]) ? ":".$parts["scheme"] : "");
+            $i = 0;
+            $count = count($this->allowedOrigins);
+            while ($allowed && $i < $count)
+            {
+                if ($this->allowedOrigins[$i] === "*")
+                    break;
+                $parts = parse_url($this->allowedOrigins[$i]);
+                $url = (isset($parts["scheme"]) ? $parts["scheme"] : "")."://"
+                    .(isset($parts["host"]) ? $parts["host"] : "").(isset($parts["port"]) ? ":".$parts["scheme"] : "");
+                if ($ori === $url)
+                    break;
+                else
+                    $i++;
+            }
+            if ($i === $count)
+                $allowed = false;
+            if ($allowed)
+            {
+                header("Access-Control-Allow-Origin: {$origin[0]}");
+                header("Access-Control-Allow-Methods: ".join(", ", $this->allowedMethods));
+                header(Initialization::getProtocol()." 204 ".Response::$defaultReasonPhrase[204], true);
+                exit;
+            }
+            else
+            {
+                header(Initialization::getProtocol()." 403 ".Response::$defaultReasonPhrase[403], true);
+                exit;
+            }
+        }
+        
     }
 }
 ?>

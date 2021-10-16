@@ -3,11 +3,11 @@ namespace PHPCore;
 
 class HttpMethods extends Enum
 {
-    const GetMethod = "GET";
-    const PostMethod = "POST";
-    const PutMethod = "PUT";
-    const DeleteMethod = "DELETE";
-    const PatchMethod = "PATCH";
-    const OptionsMethod = "OPTIONS";
+    const Get = "GET";
+    const Post = "POST";
+    const Put = "PUT";
+    const Delete = "DELETE";
+    const Patch = "PATCH";
+    const Options = "OPTIONS";
 }
 ?>

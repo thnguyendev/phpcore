@@ -1,9 +1,11 @@
 <?php
 namespace PHPCore;
 
+use Psr\Http\Message\Response;
+
 abstract class AppRoute
 {
-    protected $mapping = [];
+    protected $routes = [];
 
     abstract public function initialize();
 
@@ -14,22 +16,22 @@ abstract class AppRoute
         $trim = trim($path, "/");
         $words = $trim === "" ? [] : explode("/", $trim);
         $wordCount = count($words);
-        foreach ($this->mapping as $value)
+        foreach ($this->routes as $item)
         {
-            if (!is_array($value) || !isset($value[RouteProperties::Path]) || !is_string($value[RouteProperties::Path]))
+            if (!is_array($item) || !isset($item[RouteProperties::Path]) || !is_string($item[RouteProperties::Path]))
                 continue;
-            if (isset($value[RouteProperties::Methods]) && !in_array($method, $value[RouteProperties::Methods]))
+            if (isset($item[RouteProperties::Methods]) && !in_array($method, $item[RouteProperties::Methods]))
                 continue;
-            $trim = trim($value[RouteProperties::Path], "/");
+            $trim = trim($item[RouteProperties::Path], "/");
             $keys = $trim === "" ? [] : explode("/", $trim);
             $keyCount = count($keys);
             $paramCount = 0;
-            if (isset($value[RouteProperties::Parameters]) && is_array($value[RouteProperties::Parameters]))
-                $paramCount = count($value[RouteProperties::Parameters]);
+            if (isset($item[RouteProperties::Parameters]) && is_array($item[RouteProperties::Parameters]))
+                $paramCount = count($item[RouteProperties::Parameters]);
             if ($keyCount + $paramCount !== $wordCount || ($route !== null && $keyCount <= $count))
                 continue;
             $paths = array_slice($words, 0, $keyCount);
-            if (strtolower(join("/", $paths)) === strtolower(trim($value[RouteProperties::Path], "/")))
+            if (strtolower(join("/", $paths)) === strtolower(trim($item[RouteProperties::Path], "/")))
             {
                 $params = [];
                 if ($paramCount > 0)
@@ -39,11 +41,11 @@ abstract class AppRoute
                     while ($i < $paramCount)
                     {
                         if (isset($paramValues[$i]))
-                            $params[$value[RouteProperties::Parameters][$i]] = $paramValues[$i];
+                            $params[$item[RouteProperties::Parameters][$i]] = $paramValues[$i];
                         $i++;
                     }
                 }
-                $clone = array_merge(array(), $value);
+                $clone = array_merge(array(), $item);
                 $clone[RouteProperties::Parameters] = $params;
                 $route = $clone;
                 $count = $keyCount;
@@ -51,8 +53,15 @@ abstract class AppRoute
         }
         if ($route === null)
             throw new NotFoundException("Route {$path} for {$method} method not found", 404);
-        else
-            return $route;
+        if (isset($route[RouteProperties::Redirect]))
+        {
+            if (!is_string($route[RouteProperties::Redirect]))
+                throw new \Exception("Redirect URL must be a string", 500);
+            header(Initialization::getProtocol()." 301 ".Response::$defaultReasonPhrase[301], true);
+            header("Location: ".$route[RouteProperties::Redirect]);
+            exit;
+        }
+        return $route;
     }
 }
 ?>

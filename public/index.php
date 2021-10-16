@@ -69,7 +69,7 @@ try
 	$response = $responseFactory->createResponse();
 	$appInstance = new Bootstrap($container, $request, $response, "{$baseFolder}/src/app");
 	$appInstance->initialize();
-	$appInstance->process();
+	$appInstance->processRequest();
 }
 catch (Throwable $e)
 {

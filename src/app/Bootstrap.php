@@ -8,6 +8,7 @@ class Bootstrap extends App
     public function initialize()
     {
         $this->setRoute(new Route());
+        $this->allowCors();
     }
 
     public function process()
