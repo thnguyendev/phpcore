@@ -2,25 +2,28 @@
 PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET Core. It aims to be simple and easy to use. PHPWebCore implements PSR-7 HTTP message interfaces and PSR-17 HTTP Factories. It also supports dependency injection.
 
 ## Quick start
-1. Download and install Composer by the following url https://getcomposer.org/download/
-2. Create phpcore project by Composer. Execute below commands
+1. PHPWebCore needs Composer and of course PHP. Make sure you download and install [PHP](https://www.php.net/downloads.php) and [Composer](https://getcomposer.org/download).
+2. Create PHPWebCore project by Composer. Then, run the update command from Composer to download all of denpendencies.
     ```shell
-    composer create-project thnguyendev/PHPWebCore [project folder]
-    cd [project folder]
+    composer create-project thnguyendev/phpwebcore [project name]
+    cd [project name]
     composer update
     ```
-3. Configure web server
-    * Apache server
-    Modify .htaccess file of project as per following
+3. The web root folder is "public" in project folder. There are several ways to run the app: use the PHP built-in server, Apache server or Nginx server, etc.. For PHP built-in server, you just need to set the document root is "public" folder. In Apache server, .htaccess file is ready in "public" folder, you need to set "public" folder is Apache web root directory. If you use Nginx server, you need to add a server in nginx.conf which has root points to "public" folder in app and setup location like below.
+    * PHP built-in server
+    ```shell
+    php -S localhost -t <path to project folder>/public
+    ```
+    * Apache server .htaccess config
     ```apacheconf
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php?q=$1 [QSA,NC,L]
     ```
-    * Nginx server
-    Insert following codes into your server configuration in nginx.conf
+    * Nginx server nginx.conf config
     ```nginx
+    root        <path to project folder>/public;
     location / {
         index  index.html index.htm index.php;
         if (!-e $request_filename) {
@@ -28,72 +31,96 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
         }
     }
     ```
-4. Create Routes [project folder]/src/server/models/Routes.php
+4. Now back to the app, your workspace in the app is just inside the "src/app" folder. Working with the routes of web app is our first step. PHPWebCore does not use the PHP attributes for the routing. The default routing is the Route class extends from PHPWebCore\AppRoute in Route.php. You need to implement method initialize() for Route class. In this example, we create 2 routes: one is the root path and the other is also the root path but it has "name" as parameter.
     ```php
-    <?php
-        namespace phpcore\models;
+    namespace App;
 
-        use phpcore\core\RouteDefine;
+    use PHPWebCore\AppRoute;
+    use PHPWebCore\RouteProperty;
+    use App\Controllers\HomeController;
 
-        class Routes {
-            public const paths = array(
-                "" => array (
-                    RouteDefine::controller => "phpcore\\controllers\\HomeController",
-                    RouteDefine::view => "src/server/views/Home.php"
-                )
-            );
+    class Route extends AppRoute
+    {
+        public function initialize()
+        {
+            $this->routes = 
+            [
+                [
+                    // Root path can be empty or "/"
+                    RouteProperty::Path => "",
+                    // Parameters is an a array of string, contains all parameters' names
+                    RouteProperty::Controller => HomeController::class,
+                    // Method name
+                    RouteProperty::Action => "index",
+                    // View file name with full path. The root is "app" folder
+                    RouteProperty::View => "Views/HomeView",
+                ],
+                [
+                    // Root path can be empty or "/"
+                    RouteProperty::Path => "/",
+                    // Parameters is an a array of string, contains all parameters' names
+                    RouteProperty::Parameters => ["name"],
+                    // Full class name with namespace. "App" is root namespace of the app
+                    RouteProperty::Controller => HomeController::class,
+                    // Method name
+                    RouteProperty::Action => "index",
+                    // View file name with full path. The root is "app" folder
+                    RouteProperty::View => "Views/HomeView",
+                ],
+            ];
         }
-    ?>
+    }
     ```
-5. Modify startup file [project folder]/src/server/Startup.php
+5. As you see, the routes need HomeController class with the method index(). A controller class can have any name that you like but it must be derived from PHPWebCore/Controller class. The name "HomeController" comes from ASP.NET Core. Moreover, the index() method can 1 parameter or nothing at all. The index() method will call view() method and pass "name" to $args. Now, we create a folder name "Controllers" inside "app" folder and create a file "HomeController.php". Please note that the name of the php file must be the same as the class name.
     ```php
-    <?php
-        namespace phpcore;
+    namespace App\Controllers;
 
-        use phpcore\core\App;
-        use phpcore\models\Routes;
+    use PHPWebCore\Controller;
 
-        class Startup extends App {
-            public function __construct() {
-                parent::__construct();
-                $routeService = $this->getService("phpcore\\core\\RouteService");
-                $routeService->setRoutes(Routes::paths);
-                $routeService->mapRoute();
-            }
+    class HomeController extends Controller
+    {
+        public function index(string $name = null)
+        {
+            $this->view(["name" => $name]);
         }
-    ?>
+    }
     ```
-5. Create HomeController [project folder]/src/server/controllers/HomeController.php
+6. The routes also need a view for the controller. It recommends to use HTML or PHP for the view file. You could put PHP codes inside your HTML template. According to our declaration in routers, the app will look for the view "HomeView", "HomeView.php" or "HomeView.html" in "Views" folder inside "app" folder. So, we create "Views" folder inside "src/app", then create "HomeView.php" inside "Views" folder. 
     ```php
-    <?php
-        namespace phpcore\controllers;
-
-        use phpcore\core\Controller;
-
-        class HomeController extends Controller {
-			public $message;
-			public function process() {
-				$this->message = "Welcome to PHP Core";
-				$this->view();
-			}
-		}
-    ?>
-    ```
-6. Create a view for HomeController [project folder]/src/server/views/Home.php
-    ```html
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PHP Core</title>
+        <title>PHPWebCore</title>
     </head>
     <body>
-        <h1><?php echo $this->message; ?></h1>
+        <h1>Hi <?php echo isset($args["name"]) ? $args["name"] : "there" ?>, welcome to PHPWebCore!</h1>
     </body>
     </html>
     ```
+7. So, everything is ready except the last step, the app entry point. Default PHPWebCore app entry class is Bootstrap, which is devired from PHPWebCore/App. Yes, it is Bootstrap instead of Startup. Did you feel the ASP.NET Core until now :D? We need to implement process() method. We will make flow of processing of the app here, such as add servcies to app's container, redirect to HTTPS, allow CORS (origin only), use routing, invoke action, etc... You can also run middleware here, before and after invoke action like authorization. In this example, we only use routing and invoke action after that.
+    ```php
+    namespace App;
 
+    use PHPWebCore\App;
+
+    class Bootstrap extends App
+    {
+        public function process()
+        {
+            // Add default routing
+            $this->setRouting(new Route());
+            
+            // Use routing to map route
+            $this->useRouting();
+
+            // Invoke the action to fulfill the request
+            // Data likes user information from Authorization can be passed to controller by bucket
+            $this->invokeAction(bucket: null);
+        }
+    }
+    ```
 ## Web API
 Steps to create a Web API with phpcore framework.
 1. Follow steps 1 to 3 from Quick start to setup new project.
@@ -392,7 +419,7 @@ This example demonstrate authentication with Firebase Jwt.
     ```
     Run below command in console to update project
     ```
-    > composer update
+    composer update
     ```
 3. Create AuthorizationService class [project folder]/src/server/services/AuthorizationService.php
     ```php
@@ -557,5 +584,5 @@ This example demonstrate authentication with Firebase Jwt.
 ## Running tests
 Run the unit tests
     ```
-    > ./vendor/bin/phpunit tests
+    ./vendor/bin/phpunit tests
     ```

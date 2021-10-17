@@ -5,20 +5,22 @@ use PHPWebCore\App;
 
 class Bootstrap extends App
 {
-    public function initialize()
+    public function process()
     {
+        // Add services to container
+        //$this->container = $this->container
+        //    ->withSingleton(DatabaseSeviceInterface::class, DatabaseService::class)
+        //    ->withTransient(DoSomethingServiceInterface::class, DoSomethingService::class);
+
+        // Redirect to HTTPS
+        //$this->useHttps();
+
+        // Allow CORS
+        //$this->allowCors();
+
         // Add default routing
         $this->setRouting(new Route());
         
-        // Allow CORS
-        $this->allowCors();
-    }
-
-    public function process()
-    {
-        // Redirect to HTTPS
-        // $this->useHttps();
-
         // Use routing to map route
         $this->useRouting();
 

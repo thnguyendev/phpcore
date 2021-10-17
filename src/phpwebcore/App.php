@@ -15,7 +15,6 @@ abstract class App
     protected $allowedOrigins;
     private static $appFolder;
 
-    abstract public function initialize();
     abstract public function process();
 
     public function __construct
