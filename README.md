@@ -86,7 +86,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     }
     ```
 6. The routes also need a view for the controller. It recommends to use HTML or PHP for the view file. You could put PHP codes inside your HTML template. According to our declaration in routers, the app will look for the view "HomeView", "HomeView.php" or "HomeView.html" in "Views" folder inside "app" folder. So, we create "Views" folder inside "src/app", then create "HomeView.php" inside "Views" folder. 
-    ```php
+    ```html
     <!DOCTYPE html>
     <html lang="en">
     <head>
