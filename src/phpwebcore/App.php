@@ -95,7 +95,7 @@ abstract class App
         if ($uri->getScheme() === "http")
         {
             $uri = $uri->withScheme("https");
-            header(Initialization::getProtocol()." 301 ".Response::$ReasonPhrase[301], true);
+            header(Initialization::getProtocol()." 301 ".Response::ReasonPhrase[301], true);
             header("Location: ".$uri->__toString());
             exit;
         }
@@ -168,12 +168,12 @@ abstract class App
             {
                 header(HttpHeader::AccessControlAllowOrigin.": {$origin[0]}");
                 header(HttpHeader::AccessControlAllowMethods.": ".join(", ", $this->allowedMethods));
-                header(Initialization::getProtocol()." 204 ".Response::$ReasonPhrase[204], true);
+                header(Initialization::getProtocol()." 204 ".Response::ReasonPhrase[204], true);
                 exit;
             }
             else
             {
-                header(Initialization::getProtocol()." 403 ".Response::$ReasonPhrase[403], true);
+                header(Initialization::getProtocol()." 403 ".Response::ReasonPhrase[403], true);
                 exit;
             }
         }
@@ -195,7 +195,7 @@ abstract class App
             $method = $this->request->getMethod();
         if (!in_array($method, $supportedMethods))
         {
-            header(Initialization::getProtocol()." 405 ".Response::$ReasonPhrase[405], true);
+            header(Initialization::getProtocol()." 405 ".Response::ReasonPhrase[405], true);
             exit;
         }
     }

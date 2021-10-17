@@ -5,7 +5,7 @@ class Response extends Message implements ResponseInterface {
     protected $statusCode = 200;
     protected $reasonPhrase = '';
 
-    public static $ReasonPhrase =
+    public const ReasonPhrase =
     [
         // Informational 1xx
         100 => 'Continue',
@@ -96,8 +96,8 @@ class Response extends Message implements ResponseInterface {
             $clone->reasonPhrase = $reasonPhrase;
         else
         {
-            if (key_exists($clone->statusCode, static::$ReasonPhrase))
-                $clone->reasonPhrase = static::$ReasonPhrase[$clone->statusCode];
+            if (key_exists($clone->statusCode, static::ReasonPhrase))
+                $clone->reasonPhrase = static::ReasonPhrase[$clone->statusCode];
             else
                 $clone->reasonPhrase = '';
         }

@@ -61,7 +61,7 @@ abstract class AppRoute
         {
             if (!is_string($route[RouteProperty::Redirect]))
                 throw new \Exception("Redirect URL must be a string", 500);
-            header(Initialization::getProtocol()." 301 ".Response::$ReasonPhrase[301], true);
+            header(Initialization::getProtocol()." 301 ".Response::ReasonPhrase[301], true);
             header("Location: ".$route[RouteProperty::Redirect]);
             exit;
         }
