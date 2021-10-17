@@ -99,7 +99,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     </body>
     </html>
     ```
-7. So, everything is ready except the last step, the app entry point. Default PHPWebCore app entry class is Bootstrap, which is devired from PHPWebCore/App. Yes, it is Bootstrap instead of Startup. Did you feel the ASP.NET Core until now :D? We need to implement process() method. We will make flow of processing of the app here, such as add servcies to app's container, redirect to HTTPS, allow CORS (origin only), use routing, invoke action, etc... You can also run middleware here, before and after invoke action like authorization. In this example, we only use routing and invoke action after that.
+7. So, everything is ready except the last step, the app entry point. Default PHPWebCore app entry class is Bootstrap, which is devired from PHPWebCore/App. Yes, it is Bootstrap instead of Startup. Did you feel the ASP.NET Core until now :D? We need to implement process() method. We will make flow of processing of the app here, such as add servcies to app's container, redirect to HTTPS, allow CORS (origin only), use routing, invoke action, etc... You can also run middlewares here, before and after invoke action like authorization. In this example, we only use routing and invoke action after that.
     ```php
     namespace App;
 
@@ -121,6 +121,9 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
         }
     }
     ```
+Finally, your first PHPWebCore app is ready. Run your app and try it. Use the following Urls in your browser:
+    * http://[your host]
+    * http://[your host]/[name]
 ## Web API
 Steps to create a Web API with phpcore framework.
 1. Follow steps 1 to 3 from Quick start to setup new project.
