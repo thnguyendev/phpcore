@@ -6,6 +6,6 @@
     <title>PHPCore</title>
 </head>
 <body>
-    <h1>Hi <?php echo isset($this->parameters["name"]) ? $this->parameters["name"] : "there"; ?>, welcome to PHPCore!</h1>
+    <h1>Hi <?php echo isset($args[0]) ? $args[0] : "there" ?>, welcome to PHPCore!</h1>
 </body>
 </html>

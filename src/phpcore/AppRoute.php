@@ -40,8 +40,7 @@ abstract class AppRoute
                     $i = 0;
                     while ($i < $paramCount)
                     {
-                        if (isset($paramValues[$i]))
-                            $params[$item[RouteProperties::Parameters][$i]] = $paramValues[$i];
+                        $params[$item[RouteProperties::Parameters][$i]] = $paramValues[$i];
                         $i++;
                     }
                 }

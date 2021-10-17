@@ -5,9 +5,9 @@ use PHPCore\Controller;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(string $name)
     {
-        $this->view();
+        $this->view([$name]);
     }
 }
 ?>

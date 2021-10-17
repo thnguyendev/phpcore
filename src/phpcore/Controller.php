@@ -9,7 +9,6 @@ class Controller
 	protected $request;
 	protected $response;
 	protected $view = null;
-	protected $parameters;
 	protected $bucket = [];
 
 	public function withRequest(ServerRequestInterface $request)
@@ -23,13 +22,6 @@ class Controller
 	{
 		$clone = clone $this;
 		$clone->response = $response;
-		return $clone;
-	}
-
-	public function withParameters(array $parameters)
-	{
-		$clone = clone $this;
-		$clone->parameters = $parameters;
 		return $clone;
 	}
 
@@ -47,7 +39,7 @@ class Controller
 		return $clone;
 	}
 
-	public function view()
+	public function view(array $args = [])
 	{
 		if (isset($this->view))
 		{

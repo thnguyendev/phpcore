@@ -61,8 +61,6 @@ abstract class App
         $controller = $controller
             ->withRequest($this->request)
             ->withResponse($this->response);
-        if (isset($route[RouteProperties::Parameters]))
-            $controller = $controller->withParameters($route[RouteProperties::Parameters]);
         if (isset($route[RouteProperties::View]))
             $controller = $controller->withView($route[RouteProperties::View]);
         if (isset($bucket))
@@ -71,7 +69,7 @@ abstract class App
                 $bucket = [$bucket];
             $controller = $controller->withBucket($bucket);
         }
-        $reflection->getMethod($route[RouteProperties::Action])->invoke($controller);
+        $reflection->getMethod($route[RouteProperties::Action])->invokeArgs($controller, $route[RouteProperties::Parameters]);
         $controller->applyResponse();
     }
 
