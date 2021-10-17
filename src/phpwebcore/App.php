@@ -11,8 +11,8 @@ abstract class App
     protected $request;
     protected $response;
     protected $routing;
+    protected $route;
     protected $allowedOrigins;
-    protected $allowedMethods;
     private static $appFolder;
 
     abstract public function initialize();
@@ -43,35 +43,62 @@ abstract class App
         $this->routing = $routing;
     }
 
-    protected function invokeAction($route, $bucket = null)
+    protected function allowCors($origins = "*")
     {
-        if (!is_array($route))
+        if (!is_string($origins) && !is_array($origins))
+            throw new \InvalidArgumentException("Origins must be string or arrays");
+        $this->allowedOrigins = $origins;
+    }
+
+    protected function useHttps()
+    {
+        $uri = $this->request->getUri();
+        if ($uri->getScheme() === "http")
+        {
+            $uri = $uri->withScheme("https");
+            header(Initialization::getProtocol()." 301 ".Response::ReasonPhrase[301], true);
+            header("Location: ".$uri->__toString());
+            exit;
+        }
+    }
+
+    protected function useRouting()
+    {
+        $this->routing->initialize();
+        $this->route = $this->routing->getRoute($this->request->getMethod(), $this->request->getUri()->getPath());
+    }
+
+    protected function invokeAction($bucket = null)
+    {
+        if ($this->request->getMethod() === HttpMethod::Options)
+            $this->checkCors($this->route);
+        if (!is_array($this->route))
             throw new \InvalidArgumentException("Route must be an array", 500);
-        if (!isset($route[RouteProperty::Controller]) || !class_exists($route[RouteProperty::Controller]))
+        if (!isset($this->route[RouteProperty::Controller]) || !class_exists($this->route[RouteProperty::Controller]))
             throw new NotFoundException("Controller not found", 404);
-        if (!isset($route[RouteProperty::Action]))
+        if (!isset($this->route[RouteProperty::Action]))
             throw new NotFoundException("Action not found", 404);
-        $reflection = new \ReflectionClass($route[RouteProperty::Controller]);
-        if (!$reflection->hasMethod($route[RouteProperty::Action]))
+        $reflection = new \ReflectionClass($this->route[RouteProperty::Controller]);
+        if (!$reflection->hasMethod($this->route[RouteProperty::Action]))
             throw new NotFoundException("Action not found", 404);
-        $this->container = $this->container->withSingleton($route[RouteProperty::Controller], $route[RouteProperty::Controller]);
-        $controller = $this->container->get($route[RouteProperty::Controller]);
+        $this->container = $this->container->withSingleton($this->route[RouteProperty::Controller], $this->route[RouteProperty::Controller]);
+        $controller = $this->container->get($this->route[RouteProperty::Controller]);
         if (!$controller instanceof Controller)
-            throw new \Exception("{$route[RouteProperty::Controller]} is not a controller", 500);
+            throw new \Exception("{$this->route[RouteProperty::Controller]} is not a controller", 500);
         $controller = $controller
             ->withRequest($this->request)
             ->withResponse($this->response);
-        if (isset($route[RouteProperty::View]))
-            $controller = $controller->withView($route[RouteProperty::View]);
+        if (isset($this->route[RouteProperty::View]))
+            $controller = $controller->withView($this->route[RouteProperty::View]);
         if (isset($bucket))
         {
             if (!is_array($bucket))
                 $bucket = [$bucket];
             $controller = $controller->withBucket($bucket);
         }
-        $method = $reflection->getMethod($route[RouteProperty::Action]);
+        $method = $reflection->getMethod($this->route[RouteProperty::Action]);
         $params = $method->getParameters();
-        $values = $route[RouteProperty::Parameters];
+        $values = $this->route[RouteProperty::Parameters];
         $args = [];
         $i = 0;
         foreach($params as $param)
@@ -87,96 +114,6 @@ abstract class App
         }
         $method->invokeArgs($controller, $args);
         $controller->applyResponse();
-    }
-
-    protected function useHttps()
-    {
-        $uri = $this->request->getUri();
-        if ($uri->getScheme() === "http")
-        {
-            $uri = $uri->withScheme("https");
-            header(Initialization::getProtocol()." 301 ".Response::ReasonPhrase[301], true);
-            header("Location: ".$uri->__toString());
-            exit;
-        }
-    }
-
-    public function processRequest()
-    {
-        $method = $this->request->getMethod();
-        if ($method === HttpMethod::Options)
-            $this->checkCors();
-        else
-            $this->process();
-    }
-
-    protected function allowCors
-    (
-        $origins = "*",
-        $methods = 
-        [
-            HttpMethod::Get,
-            HttpMethod::Post,
-            HttpMethod::Put,
-            HttpMethod::Patch,
-            HttpMethod::Delete,
-        ]
-    )
-    {
-        if (is_string($origins))
-            $origins = [$origins];
-        if (is_string($methods))
-            $methods = [$methods];
-        if (!is_array($origins) || !is_array($methods))
-            throw new \InvalidArgumentException("Origins and methods must be strings or arrays");
-        $this->allowedOrigins = $origins;
-        $this->allowedMethods = $methods;
-    }
-
-    protected function checkCors()
-    {
-        $allowed = true;
-        $method = $this->request->getHeader(HttpHeader::AccessControlRequestMethod);
-        if (count($method) > 0)
-        {
-            if (!in_array($method[0], $this->allowedMethods))
-                $allowed = false;
-        }
-        $origin = $this->request->getHeader("Origin");
-        if (count($origin) > 0)
-        {
-            $parts = parse_url($origin[0]);
-            $ori = (isset($parts["scheme"]) ? $parts["scheme"] : "")."://"
-                .(isset($parts["host"]) ? $parts["host"] : "").(isset($parts["port"]) ? ":".$parts["scheme"] : "");
-            $i = 0;
-            $count = count($this->allowedOrigins);
-            while ($allowed && $i < $count)
-            {
-                if ($this->allowedOrigins[$i] === "*")
-                    break;
-                $parts = parse_url($this->allowedOrigins[$i]);
-                $url = (isset($parts["scheme"]) ? $parts["scheme"] : "")."://"
-                    .(isset($parts["host"]) ? $parts["host"] : "").(isset($parts["port"]) ? ":".$parts["scheme"] : "");
-                if ($ori === $url)
-                    break;
-                else
-                    $i++;
-            }
-            if ($i === $count)
-                $allowed = false;
-            if ($allowed)
-            {
-                header(HttpHeader::AccessControlAllowOrigin.": {$origin[0]}");
-                header(HttpHeader::AccessControlAllowMethods.": ".join(", ", $this->allowedMethods));
-                header(Initialization::getProtocol()." 204 ".Response::ReasonPhrase[204], true);
-                exit;
-            }
-            else
-            {
-                header(Initialization::getProtocol()." 403 ".Response::ReasonPhrase[403], true);
-                exit;
-            }
-        }
     }
 
     protected function checkMethod()
@@ -196,6 +133,45 @@ abstract class App
         if (!in_array($method, $supportedMethods))
         {
             header(Initialization::getProtocol()." 405 ".Response::ReasonPhrase[405], true);
+            exit;
+        }
+    }
+
+    protected function checkCors()
+    {
+        $allowed = false;
+        $allowedOrigins = $this->allowedOrigins;
+        if (isset($this->route[RouteProperty::AllowedOrigins])
+            && (is_string($this->route[RouteProperty::AllowedOrigins]) || is_array($this->route[RouteProperty::AllowedOrigins])))
+            $allowedOrigins = $this->route[RouteProperty::AllowedOrigins];
+        if ($allowedOrigins === "*")
+            $allowed = true;
+        $origin = $this->request->getHeaderLine(HttpHeader::Origin);
+        if (is_string($allowedOrigins))
+        {
+            if ($allowedOrigins === $origin)
+                $allowed = true;
+        }
+        else
+        {
+            $i = 0;
+            $count = count($allowedOrigins);
+            while (!$allowed && $i < $count)
+            {
+                if ($allowedOrigins[$i] === $origin)
+                    $allowed = true;
+                $i++;
+            }
+        }
+        if ($allowed)
+        {
+            header(HttpHeader::AccessControlAllowOrigin.": {$origin}");
+            header(Initialization::getProtocol()." 204 ".Response::ReasonPhrase[204], true);
+            exit;
+        }
+        else
+        {
+            header(Initialization::getProtocol()." 403 ".Response::ReasonPhrase[403], true);
             exit;
         }
     }

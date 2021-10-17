@@ -12,8 +12,6 @@ class RouteProperty extends Enum
     const Redirect = "Redirect";
     const Authorized = "Authorized";
     const Roles = "Roles";
-    const AllowedOrigins = "AllowedOrigin";
-    const AllowedMethods = "AllowedMethods";
-    const AllowedHeaders = "AllowedHeaders";
+    const AllowedOrigins = "AllowedOrigins";
 }
 ?>

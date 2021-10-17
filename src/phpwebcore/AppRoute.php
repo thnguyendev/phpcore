@@ -20,7 +20,7 @@ abstract class AppRoute
         {
             if (!is_array($item) || !isset($item[RouteProperty::Path]) || !is_string($item[RouteProperty::Path]))
                 continue;
-            if (isset($item[RouteProperty::Methods]) && !in_array($method, $item[RouteProperty::Methods]))
+            if ($method !== HttpMethod::Options && isset($item[RouteProperty::Methods]) && !in_array($method, $item[RouteProperty::Methods]))
                 continue;
             $trim = trim($item[RouteProperty::Path], "/");
             $keys = $trim === "" ? [] : explode("/", $trim);
