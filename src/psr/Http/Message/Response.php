@@ -2,9 +2,6 @@
 namespace Psr\Http\Message;
 
 class Response extends Message implements ResponseInterface {
-    protected $statusCode = 200;
-    protected $reasonPhrase = '';
-
     public const ReasonPhrase =
     [
         // Informational 1xx
@@ -80,6 +77,9 @@ class Response extends Message implements ResponseInterface {
         510 => 'Not Extended',
         511 => 'Network Authentication Required',
     ];
+    
+    protected $statusCode = 200;
+    protected $reasonPhrase = '';
 
     public function getStatusCode()
     {
