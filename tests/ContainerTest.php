@@ -1,6 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use PHPCore\Container;
+use PHPWebCore\Container;
 
 class ContainerTest extends TestCase
 {

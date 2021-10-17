@@ -1,8 +1,8 @@
 <?php
 namespace App;
 
-use PHPCore\AppRoute;
-use PHPCore\RouteProperties;
+use PHPWebCore\AppRoute;
+use PHPWebCore\RouteProperties;
 use App\Controllers\HomeController;
 
 class Route extends AppRoute

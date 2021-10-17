@@ -1,5 +1,5 @@
 <?php
-namespace PHPCore;
+namespace PHPWebCore;
 
 use Psr\Http\Message\Response;
 use Psr\Http\Message\ResponseInterface;

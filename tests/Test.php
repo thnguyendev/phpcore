@@ -1,5 +1,5 @@
 <?php
-use PHPCore\Container;
+use PHPWebCore\Container;
 // Interface definition
 abstract class Animal {
   protected $legs;

@@ -1,14 +1,14 @@
 {
-    "name": "thnguyendev/phpcore",
-    "description": "The PHPCore framework",
+    "name": "thnguyendev/phpwebcore",
+    "description": "The PHPWebCore framework",
     "version": "4.0.0",
-    "keywords": ["PHPCore", "PHP framework", "MVC", "OOP", "PSR", "Dependency Injection"],
+    "keywords": ["PHPCore", "PHP", "MVC framework", "OOP", "PSR", "Dependency Injection"],
     "license": "MIT",
     "type": "project",
     "autoload": {
         "psr-4": {
             "App\\": "src/app",
-            "PHPCore\\": "src/phpcore",
+            "PHPWebCore\\": "src/phpwebcore",
             "Psr\\": "src/psr"
         }
     },

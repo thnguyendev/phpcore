@@ -1,5 +1,5 @@
 <?php
-// PHPCore
+// PHPWebCore
 // Author: Hung Thanh Nguyen
 
 // Web server configurations
@@ -26,10 +26,10 @@ use Psr\Http\Message\UploadedFileFactory;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UriFactory;
 use Psr\Http\Message\UriFactoryInterface;
-use PHPCore\ErrorService;
-use PHPCore\ErrorServiceInterface;
-use PHPCore\Container;
-use PHPCore\Initialization;
+use PHPWebCore\ErrorService;
+use PHPWebCore\ErrorServiceInterface;
+use PHPWebCore\Container;
+use PHPWebCore\Initialization;
 use App\Bootstrap;
 
 $container = null;

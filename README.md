@@ -1,11 +1,11 @@
-# PHPCore 4.0.0
-PHPCore is a PHP MVC framework. It aims to be simple and easy to use. PHPCore implements PSR-7 HTTP message interfaces and PSR-17 HTTP Factories. It also supports dependency injection.
+# PHPWebCore 4.0.0
+PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET Core. It aims to be simple and easy to use. PHPWebCore implements PSR-7 HTTP message interfaces and PSR-17 HTTP Factories. It also supports dependency injection.
 
 ## Quick start
 1. Download and install Composer by the following url https://getcomposer.org/download/
 2. Create phpcore project by Composer. Execute below commands
     ```
-    > composer create-project thnguyendev/phpcore [project folder]
+    > composer create-project thnguyendev/PHPWebCore [project folder]
     > cd [project folder]
     > composer update
     ```

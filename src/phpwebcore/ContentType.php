@@ -1,5 +1,5 @@
 <?php
-namespace PHPCore;
+namespace PHPWebCore;
 
 class ContentType extends Enum
 {
