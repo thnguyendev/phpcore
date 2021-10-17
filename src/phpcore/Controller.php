@@ -4,7 +4,7 @@ namespace PHPCore;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-abstract class Controller
+class Controller
 {
 	protected $request;
 	protected $response;
