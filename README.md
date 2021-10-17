@@ -7,7 +7,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     ```shell
     composer create-project thnguyendev/phpwebcore [project name]
     cd [project name]
-    composer update
+    composer install
     ```
 3. The web root folder is "public" in project folder. There are several ways to run the app: use the PHP built-in server, Apache server or Nginx server, etc.. For PHP built-in server, you just need to set the document root is "public" folder. In Apache server, .htaccess file is ready in "public" folder, you need to set "public" folder is Apache web root directory. If you use Nginx server, you need to add a server in nginx.conf which has root points to "public" folder in app and setup location like below.
     * PHP built-in server
