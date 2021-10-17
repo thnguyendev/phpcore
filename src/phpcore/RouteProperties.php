@@ -7,6 +7,7 @@ class RouteProperties extends Enum
     const Path = "Path";
     const Parameters = "Parameters";
     const Controller = "Controller";
+    const Action = "Action";
     const View = "View";
     const Redirect = "Redirect";
     const Authorized = "Authorized";

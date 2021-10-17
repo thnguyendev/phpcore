@@ -7,16 +7,16 @@ class Bootstrap extends App
 {
     public function initialize()
     {
-        $this->setRoute(new Route());
+        $this->setRouting(new Route());
         $this->allowCors();
     }
 
     public function process()
     {
-        $this->route->initialize();
-        $route = $this->route->getRoute($this->request->getMethod(), $this->request->getUri()->getPath());
+        $this->routing->initialize();
+        $route = $this->routing->getRoute($this->request->getMethod(), $this->request->getUri()->getPath());
         // Middleware before controller handle request such as Authorization can apply here
-        $this->getController($route)->processRequest();
+        $this->mapController($route);
         // Middleware after controller handle request can be here
     }
 }

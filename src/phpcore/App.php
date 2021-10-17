@@ -10,7 +10,7 @@ abstract class App
     protected $container;
     protected $request;
     protected $response;
-    protected $route;
+    protected $routing;
     protected $allowedOrigins;
     protected $allowedMethods;
     private static $appFolder;
@@ -30,6 +30,7 @@ abstract class App
         $this->request = $request;
         $this->response = $response;
         static::$appFolder = $appFolder;
+        $this->checkMethod();
     }
 
     public static function getAppFolder()
@@ -37,18 +38,24 @@ abstract class App
         return static::$appFolder;
     }
 
-    protected function setRoute(AppRoute $route)
+    protected function setRouting(AppRoute $routing)
     {
-        $this->route = $route;
+        $this->routing = $routing;
     }
 
-    protected function getController($route, $bucket = null)
+    protected function mapController($route, $bucket = null)
     {
         if (!is_array($route))
             throw new \InvalidArgumentException("Route must be an array", 500);
         if (!isset($route[RouteProperties::Controller]) || !class_exists($route[RouteProperties::Controller]))
             throw new NotFoundException("Controller not found", 404);
-        $controller = new $route[RouteProperties::Controller]();
+        if (!isset($route[RouteProperties::Action]))
+            throw new NotFoundException("Action not found", 404);
+        $reflection = new \ReflectionClass($route[RouteProperties::Controller]);
+        if (!$reflection->hasMethod($route[RouteProperties::Action]))
+            throw new NotFoundException("Action not found", 404);
+        $this->container = $this->container->withSingleton($route[RouteProperties::Controller], $route[RouteProperties::Controller]);
+        $controller = $this->container->get($route[RouteProperties::Controller]);
         if (!$controller instanceof Controller)
             throw new \Exception("{$route[RouteProperties::Controller]} is not a controller", 500);
         $controller = $controller
@@ -64,7 +71,8 @@ abstract class App
                 $bucket = [$bucket];
             $controller = $controller->withBucket($bucket);
         }
-        return $controller;
+        $reflection->getMethod($route[RouteProperties::Action])->invoke($controller);
+        $controller->applyResponse();
     }
 
     protected function useHttps()
@@ -155,7 +163,27 @@ abstract class App
                 exit;
             }
         }
-        
+    }
+
+    protected function checkMethod()
+    {
+        $supportedMethods = 
+        [
+            HttpMethods::Delete,
+            HttpMethods::Get,
+            HttpMethods::Options,
+            HttpMethods::Patch,
+            HttpMethods::Post,
+            HttpMethods::Put,
+        ];
+        $method = "";
+        if (isset($this->request))
+            $method = $this->request->getMethod();
+        if (!in_array($method, $supportedMethods))
+        {
+            header(Initialization::getProtocol()." 405 ".Response::$defaultReasonPhrase[405], true);
+            exit;
+        }
     }
 }
 ?>

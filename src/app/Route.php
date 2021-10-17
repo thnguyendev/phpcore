@@ -14,12 +14,14 @@ class Route extends AppRoute
             [
                 RouteProperties::Path => "",
                 RouteProperties::Controller => HomeController::class,
+                RouteProperties::Action => "index",
                 RouteProperties::View => "Views/HomeView",
             ],
             [
                 RouteProperties::Path => "",
                 RouteProperties::Parameters => ["name"],
                 RouteProperties::Controller => HomeController::class,
+                RouteProperties::Action => "index",
                 RouteProperties::View => "Views/HomeView",
             ],
         ];

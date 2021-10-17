@@ -12,8 +12,6 @@ abstract class Controller
 	protected $parameters;
 	protected $bucket = [];
 
-	abstract public function process();
-
 	public function withRequest(ServerRequestInterface $request)
 	{
 		$clone = clone $this;
@@ -68,9 +66,8 @@ abstract class Controller
 		}
 	}
 
-	public function processRequest()
+	public function applyResponse()
 	{
-		$this->process();
 		header(Initialization::getProtocol()." {$this->response->getStatusCode()} {$this->response->getReasonPhrase()}", true);
 	}
 }

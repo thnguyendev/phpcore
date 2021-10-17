@@ -7,6 +7,53 @@ class Container implements ContainerInterface
 
     public function withSingleton(string $id, string|object $entry, $parameters = [])
     {
+        return $this->add(EntryLifetime::Singleton, $id, $entry, $parameters);
+    }
+
+    public function withTransient(string $id, string $entry, $parameters = [])
+    {
+        return $this->add(EntryLifetime::Transient, $id, $entry, $parameters);
+    }
+
+    public function get(string $id)
+    {
+        if (!$this->has($id))
+            throw new NotFoundException("{$id} not found in container");
+        $entry = $this->container[$id];
+        if ($entry["lifetime"] === EntryLifetime::Singleton)
+        {
+            if (!isset($entry["instance"]))
+                $entry["instance"] = $this->resolve($entry["class"], $entry["parameters"]);
+            return $entry["instance"];
+        }
+        else
+        {
+            if (isset($entry["class"]))
+                return $this->resolve($entry["class"], $entry["parameters"]);
+            else
+            {
+                if (is_object($entry["instance"]))
+                    return clone $entry["instance"];
+                else if (is_array($entry["instance"]))
+                    return array_merge(array(), $entry["instance"]);
+                else
+                {
+                    $clone = $entry["instance"];
+                    return $clone;
+                }
+            }
+        }
+    }
+
+    public function has(string $id)
+    {
+        if (!is_string($id))
+            throw new \InvalidArgumentException("Id must be a string");
+        return isset($this->container[$id]);
+    }
+
+    protected function add($lifetime, string $id, string|object $entry, $parameters = [])
+    {
         if (!is_string($id))
             throw new \InvalidArgumentException("Id must be a string");
         $id = trim($id);
@@ -17,14 +64,11 @@ class Container implements ContainerInterface
         if (!is_array($parameters))
             $parameters = [$parameters];
         $clone = clone $this;
-        if (is_string($entry))
+        if (is_string($entry) && class_exists($entry))
         {
-            $entry = trim($entry);
-            if (!class_exists($entry))
-                throw new \InvalidArgumentException("{$entry} class has not been defined");
             $clone->container[$id] = array
             (
-                "lifetime" => EntryLifetime::Singleton,
+                "lifetime" => $lifetime,
                 "class" => $entry,
                 "parameters" => $parameters,
             );
@@ -35,7 +79,7 @@ class Container implements ContainerInterface
                 throw new \InvalidArgumentException("Entry must not be null");
             $clone->container[$id] = array
             (
-                "lifetime" => EntryLifetime::Singleton,
+                "lifetime" => $lifetime,
                 "instance" => $entry,
                 "parameters" => $parameters,
             );
@@ -43,58 +87,10 @@ class Container implements ContainerInterface
         return $clone;
     }
 
-    public function withTransient(string $id, string $entry, $parameters = [])
-    {
-        if (!is_string($id))
-            throw new \InvalidArgumentException("Id must be a string");
-        $id = trim($id);
-        if (empty($id))
-            throw new \InvalidArgumentException("Id must not be empty");
-        if (!is_string($entry))
-            throw new \InvalidArgumentException("Entry must be a string");
-        $entry = trim($entry);
-        if (!class_exists($entry))
-            throw new \InvalidArgumentException("{$entry} class has not been defined");
-        if (!is_array($parameters))
-            $parameters = [$parameters];
-        $clone = clone $this;
-        $clone->container[$id] = array
-        (
-            "lifetime" => EntryLifetime::Transient,
-            "class" => $entry,
-            "parameters" => $parameters,
-        );
-        return $clone;
-    }
-
-    public function get(string $id)
-    {
-        if (!$this->has($id))
-            throw new NotFoundException("{$id} not found");
-        $entry = $this->container[$id];
-        if ($entry["lifetime"] === EntryLifetime::Singleton)
-        {
-            if (!isset($entry["instance"]))
-                $entry["instance"] = $this->resolve($entry["class"], $entry["parameters"]);
-            return $entry["instance"];
-        }
-        else
-            return $this->resolve($entry["class"], $entry["parameters"]);
-    }
-
-    public function has(string $id)
-    {
-        if (!is_string($id))
-            throw new \InvalidArgumentException("Id must be a string");
-        $id = trim($id);
-        return isset($this->container[$id]);
-    }
-
     protected function resolve(string $class, $parameters)
     {
-        if ($class instanceof \Closure) {
-            return $class($this, $parameters);
-        }
+        if ($class instanceof \Closure)
+            return call_user_func_array($class, $parameters);
         $reflector = new \ReflectionClass($class);
         if (!$reflector->isInstantiable())
             throw new \Exception("Class {$class} is not instantiable");
@@ -105,24 +101,22 @@ class Container implements ContainerInterface
         $dependencies = [];
         foreach ($params as $param)
         {
-            $dependency = $param->getType();
-            if (is_null($dependency))
+            $name = $param->getName();
+            if (isset($parameters[$name]))
+                $dependencies[] = $parameters[$name];
+            else
             {
-                if (count($parameters) > 0)
-                {
-                    $dependencies[] = $parameters[0];
-                    $parameters = array_slice($parameters, 1);
-                }
-                else
+                $type = $param->getType();
+                if (is_null($type))
                 {
                     if ($param->isDefaultValueAvailable())
                         $dependencies[] = $param->getDefaultValue();
                     else
                         throw new \Exception("Cannot resolve dependency {$param->__toString()}");
-                }
-            } 
-            else
-                $dependencies[] = ($this->get($dependency->getName()));
+                } 
+                else
+                    $dependencies[] = ($this->get($type->getName()));
+            }
         }
         return $reflector->newInstanceArgs($dependencies);
     }

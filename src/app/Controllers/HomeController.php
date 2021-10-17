@@ -5,7 +5,7 @@ use PHPCore\Controller;
 
 class HomeController extends Controller
 {
-    public function process()
+    public function index()
     {
         $this->view();
     }
