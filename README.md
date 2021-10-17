@@ -31,7 +31,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
         }
     }
     ```
-4. Now back to the app, your workspace in the app is just inside the "src/app" folder. Working with the routes of web app is our first step. PHPWebCore does not use the PHP attributes for the routing. The default routing is the Route class extends from PHPWebCore\AppRoute in Route.php. You need to implement method initialize() for Route class. In this example, we create 2 routes: one is the root path and the other is also the root path but it has "name" as parameter.
+4. Now back to the app, your workspace in the app is just inside the "src/app" folder. Working with the routes of web app is our first step. PHPWebCore does not use the PHP attributes for the routing. The default routing is the Route class extends from PHPWebCore\AppRoute in Route.php. You need to implement initialize() method for Route class. In this example, we create 2 routes: one is the root path and the other is also the root path but it has "name" as parameter.
     ```php
     namespace App;
 
