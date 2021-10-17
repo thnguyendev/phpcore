@@ -122,8 +122,8 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     }
     ```
 Finally, your first PHPWebCore app is ready. Run your app and try it. Use the following Urls in your browser:
-    * http://[your host]
-    * http://[your host]/[name]
+    + http://[your host]
+    - http://[your host]/[name]
 ## Web API
 Steps to create a Web API with phpcore framework.
 1. Follow steps 1 to 3 from Quick start to setup new project.
