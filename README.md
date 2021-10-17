@@ -4,7 +4,6 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
 ## Quick start
 1. Download and install Composer by the following url https://getcomposer.org/download/
 2. Create phpcore project by Composer. Execute below commands
-
     ```shell
     composer create-project thnguyendev/PHPWebCore [project folder]
     cd [project folder]
@@ -13,7 +12,6 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
 3. Configure web server
     * Apache server
     Modify .htaccess file of project as per following
-
     ```apacheconf
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
