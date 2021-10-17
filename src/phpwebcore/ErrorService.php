@@ -13,8 +13,8 @@ class ErrorService implements ErrorServiceInterface
         if (!is_int($code) || $code < 100 || $code > 999)
             $code = 500;
         $reasonPhrase = "";
-        if (key_exists($code, Response::$defaultReasonPhrase))
-            $reasonPhrase = Response::$defaultReasonPhrase[$code];
+        if (key_exists($code, Response::$ReasonPhrase))
+            $reasonPhrase = Response::$ReasonPhrase[$code];
         header(Initialization::getProtocol()." {$code} {$reasonPhrase}", true);
         header(ContentType::TextHtml, true);
         echo "[{$time}] Error: {$e->getFile()} | {$e->getLine()} | {$e->getMessage()}".PHP_EOL."{$e->getTraceAsString()}";

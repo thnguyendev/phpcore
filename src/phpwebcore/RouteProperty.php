@@ -1,7 +1,7 @@
 <?php
 namespace PHPWebCore;
 
-class RouteProperties extends Enum
+class RouteProperty extends Enum
 {
     const Methods = "Methods";
     const Path = "Path";
@@ -12,5 +12,8 @@ class RouteProperties extends Enum
     const Redirect = "Redirect";
     const Authorized = "Authorized";
     const Roles = "Roles";
+    const AllowedOrigins = "AllowedOrigin";
+    const AllowedMethods = "AllowedMethods";
+    const AllowedHeaders = "AllowedHeaders";
 }
 ?>

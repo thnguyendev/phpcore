@@ -47,31 +47,31 @@ abstract class App
     {
         if (!is_array($route))
             throw new \InvalidArgumentException("Route must be an array", 500);
-        if (!isset($route[RouteProperties::Controller]) || !class_exists($route[RouteProperties::Controller]))
+        if (!isset($route[RouteProperty::Controller]) || !class_exists($route[RouteProperty::Controller]))
             throw new NotFoundException("Controller not found", 404);
-        if (!isset($route[RouteProperties::Action]))
+        if (!isset($route[RouteProperty::Action]))
             throw new NotFoundException("Action not found", 404);
-        $reflection = new \ReflectionClass($route[RouteProperties::Controller]);
-        if (!$reflection->hasMethod($route[RouteProperties::Action]))
+        $reflection = new \ReflectionClass($route[RouteProperty::Controller]);
+        if (!$reflection->hasMethod($route[RouteProperty::Action]))
             throw new NotFoundException("Action not found", 404);
-        $this->container = $this->container->withSingleton($route[RouteProperties::Controller], $route[RouteProperties::Controller]);
-        $controller = $this->container->get($route[RouteProperties::Controller]);
+        $this->container = $this->container->withSingleton($route[RouteProperty::Controller], $route[RouteProperty::Controller]);
+        $controller = $this->container->get($route[RouteProperty::Controller]);
         if (!$controller instanceof Controller)
-            throw new \Exception("{$route[RouteProperties::Controller]} is not a controller", 500);
+            throw new \Exception("{$route[RouteProperty::Controller]} is not a controller", 500);
         $controller = $controller
             ->withRequest($this->request)
             ->withResponse($this->response);
-        if (isset($route[RouteProperties::View]))
-            $controller = $controller->withView($route[RouteProperties::View]);
+        if (isset($route[RouteProperty::View]))
+            $controller = $controller->withView($route[RouteProperty::View]);
         if (isset($bucket))
         {
             if (!is_array($bucket))
                 $bucket = [$bucket];
             $controller = $controller->withBucket($bucket);
         }
-        $method = $reflection->getMethod($route[RouteProperties::Action]);
+        $method = $reflection->getMethod($route[RouteProperty::Action]);
         $params = $method->getParameters();
-        $values = $route[RouteProperties::Parameters];
+        $values = $route[RouteProperty::Parameters];
         $args = [];
         $i = 0;
         foreach($params as $param)
@@ -95,7 +95,7 @@ abstract class App
         if ($uri->getScheme() === "http")
         {
             $uri = $uri->withScheme("https");
-            header(Initialization::getProtocol()." 301 ".Response::$defaultReasonPhrase[301], true);
+            header(Initialization::getProtocol()." 301 ".Response::$ReasonPhrase[301], true);
             header("Location: ".$uri->__toString());
             exit;
         }
@@ -104,7 +104,7 @@ abstract class App
     public function processRequest()
     {
         $method = $this->request->getMethod();
-        if ($method === HttpMethods::Options)
+        if ($method === HttpMethod::Options)
             $this->checkCors();
         else
             $this->process();
@@ -115,11 +115,11 @@ abstract class App
         $origins = "*",
         $methods = 
         [
-            HttpMethods::Get,
-            HttpMethods::Post,
-            HttpMethods::Put,
-            HttpMethods::Patch,
-            HttpMethods::Delete,
+            HttpMethod::Get,
+            HttpMethod::Post,
+            HttpMethod::Put,
+            HttpMethod::Patch,
+            HttpMethod::Delete,
         ]
     )
     {
@@ -136,7 +136,7 @@ abstract class App
     protected function checkCors()
     {
         $allowed = true;
-        $method = $this->request->getHeader("Access-Control-Request-Method");
+        $method = $this->request->getHeader(HttpHeader::AccessControlRequestMethod);
         if (count($method) > 0)
         {
             if (!in_array($method[0], $this->allowedMethods))
@@ -166,14 +166,14 @@ abstract class App
                 $allowed = false;
             if ($allowed)
             {
-                header("Access-Control-Allow-Origin: {$origin[0]}");
-                header("Access-Control-Allow-Methods: ".join(", ", $this->allowedMethods));
-                header(Initialization::getProtocol()." 204 ".Response::$defaultReasonPhrase[204], true);
+                header(HttpHeader::AccessControlAllowOrigin.": {$origin[0]}");
+                header(HttpHeader::AccessControlAllowMethods.": ".join(", ", $this->allowedMethods));
+                header(Initialization::getProtocol()." 204 ".Response::$ReasonPhrase[204], true);
                 exit;
             }
             else
             {
-                header(Initialization::getProtocol()." 403 ".Response::$defaultReasonPhrase[403], true);
+                header(Initialization::getProtocol()." 403 ".Response::$ReasonPhrase[403], true);
                 exit;
             }
         }
@@ -183,19 +183,19 @@ abstract class App
     {
         $supportedMethods = 
         [
-            HttpMethods::Delete,
-            HttpMethods::Get,
-            HttpMethods::Options,
-            HttpMethods::Patch,
-            HttpMethods::Post,
-            HttpMethods::Put,
+            HttpMethod::Delete,
+            HttpMethod::Get,
+            HttpMethod::Options,
+            HttpMethod::Patch,
+            HttpMethod::Post,
+            HttpMethod::Put,
         ];
         $method = "";
         if (isset($this->request))
             $method = $this->request->getMethod();
         if (!in_array($method, $supportedMethods))
         {
-            header(Initialization::getProtocol()." 405 ".Response::$defaultReasonPhrase[405], true);
+            header(Initialization::getProtocol()." 405 ".Response::$ReasonPhrase[405], true);
             exit;
         }
     }

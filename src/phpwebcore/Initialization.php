@@ -15,11 +15,11 @@ class Initialization
             } 
             else if ($key === "CONTENT_TYPE")
             { 
-                $headers["content-type"] = $value;
+                $headers[HttpHeader::ContentType] = $value;
             }
             else if ($key === "CONTENT_LENGTH")
             { 
-                $headers["content-length"] = $value;
+                $headers[HttpHeader::ContentLength] = $value;
             }
         }
         return $headers;

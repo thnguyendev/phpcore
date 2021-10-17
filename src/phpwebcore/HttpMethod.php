@@ -1,7 +1,7 @@
 <?php
 namespace PHPWebCore;
 
-class HttpMethods extends Enum
+class HttpMethod extends Enum
 {
     const Get = "GET";
     const Post = "POST";

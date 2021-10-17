@@ -2,7 +2,7 @@
 namespace App;
 
 use PHPWebCore\AppRoute;
-use PHPWebCore\RouteProperties;
+use PHPWebCore\RouteProperty;
 use App\Controllers\HomeController;
 
 class Route extends AppRoute
@@ -12,17 +12,17 @@ class Route extends AppRoute
         $this->routes = 
         [
             [
-                RouteProperties::Path => "",
-                RouteProperties::Controller => HomeController::class,
-                RouteProperties::Action => "index",
-                RouteProperties::View => "Views/HomeView",
+                RouteProperty::Path => "",
+                RouteProperty::Controller => HomeController::class,
+                RouteProperty::Action => "index",
+                RouteProperty::View => "Views/HomeView",
             ],
             [
-                RouteProperties::Path => "",
-                RouteProperties::Parameters => ["name"],
-                RouteProperties::Controller => HomeController::class,
-                RouteProperties::Action => "index",
-                RouteProperties::View => "Views/HomeView",
+                RouteProperty::Path => "",
+                RouteProperty::Parameters => ["name"],
+                RouteProperty::Controller => HomeController::class,
+                RouteProperty::Action => "index",
+                RouteProperty::View => "Views/HomeView",
             ],
         ];
     }
