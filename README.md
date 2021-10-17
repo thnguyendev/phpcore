@@ -1,4 +1,4 @@
-# PHPWebCore 4.0.0
+# PHPWebCore 1.0.0
 PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET Core. It aims to be simple and easy to use. PHPWebCore implements PSR-7 HTTP message interfaces and PSR-17 HTTP Factories. It also supports dependency injection.
 
 ## Quick start
