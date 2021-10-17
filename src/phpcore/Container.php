@@ -87,10 +87,10 @@ class Container implements ContainerInterface
         return $clone;
     }
 
-    protected function resolve(string $class, $parameters)
+    protected function resolve(string $class, $args)
     {
         if ($class instanceof \Closure)
-            return call_user_func_array($class, $parameters);
+            return call_user_func_array($class, $args);
         $reflector = new \ReflectionClass($class);
         if (!$reflector->isInstantiable())
             throw new \Exception("Class {$class} is not instantiable");
@@ -99,11 +99,17 @@ class Container implements ContainerInterface
             return $reflector->newInstance();
         $params = $constructor->getParameters();
         $dependencies = [];
-        foreach ($params as $param)
+        $i = 0;
+        foreach($params as $param)
         {
             $name = $param->getName();
-            if (isset($parameters[$name]))
-                $dependencies[] = $parameters[$name];
+            if (isset($args[$name]))
+                $dependencies[] = $args[$name];
+            else if (isset($args[$i]))
+            {
+                $dependencies[] = $args[$i];
+                $i++;
+            }
             else
             {
                 $type = $param->getType();

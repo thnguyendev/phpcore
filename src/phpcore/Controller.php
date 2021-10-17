@@ -46,15 +46,12 @@ class Controller
 			$file = App::getAppFolder().$this->view;
 			if (file_exists($file))
 				require_once($file);
+			else if (file_exists($file.".php"))
+				require_once($file.".php");
+			else if (file_exists($file.".html"))
+				require_once($file.".html");
 			else
-			{
-				$file .= ".php";
-				if (file_exists($file))
-					require_once($file);
-				else
-					throw new NotFoundException("View {$this->view} not found", 404);
-			} 
-
+				throw new NotFoundException("View {$this->view} not found", 404);
 		}
 	}
 

@@ -25,27 +25,32 @@ abstract class AppRoute
             $trim = trim($item[RouteProperties::Path], "/");
             $keys = $trim === "" ? [] : explode("/", $trim);
             $keyCount = count($keys);
-            $paramCount = 0;
+            $params = [];
             if (isset($item[RouteProperties::Parameters]) && is_array($item[RouteProperties::Parameters]))
-                $paramCount = count($item[RouteProperties::Parameters]);
+                $params = $item[RouteProperties::Parameters];
+            $paramCount = count($params);
             if ($keyCount + $paramCount !== $wordCount || ($route !== null && $keyCount <= $count))
                 continue;
             $paths = array_slice($words, 0, $keyCount);
             if (strtolower(join("/", $paths)) === strtolower(trim($item[RouteProperties::Path], "/")))
             {
-                $params = [];
+                $args = [];
                 if ($paramCount > 0)
                 {
-                    $paramValues = array_slice($words, $keyCount);
+                    $values = array_slice($words, $keyCount);
                     $i = 0;
                     while ($i < $paramCount)
                     {
-                        $params[$item[RouteProperties::Parameters][$i]] = $paramValues[$i];
+                        $name = $params[$i];
+                        if (empty($name))
+                            $args[] = $values[$i];
+                        else
+                            $args[$name] = $values[$i];
                         $i++;
                     }
                 }
                 $clone = array_merge(array(), $item);
-                $clone[RouteProperties::Parameters] = $params;
+                $clone[RouteProperties::Parameters] = $args;
                 $route = $clone;
                 $count = $keyCount;
             }

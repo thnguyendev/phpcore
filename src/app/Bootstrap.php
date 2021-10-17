@@ -15,9 +15,9 @@ class Bootstrap extends App
     {
         $this->routing->initialize();
         $route = $this->routing->getRoute($this->request->getMethod(), $this->request->getUri()->getPath());
-        // Middleware before controller handle request such as Authorization can apply here
-        $this->mapController($route);
-        // Middleware after controller handle request can be here
+        // Middleware before passing request to controller such as Authorization can apply here
+        $this->invokeAction($route);
+        // Middleware after invoke the action can be here
     }
 }
 ?>

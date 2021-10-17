@@ -43,7 +43,7 @@ abstract class App
         $this->routing = $routing;
     }
 
-    protected function mapController($route, $bucket = null)
+    protected function invokeAction($route, $bucket = null)
     {
         if (!is_array($route))
             throw new \InvalidArgumentException("Route must be an array", 500);
@@ -69,7 +69,23 @@ abstract class App
                 $bucket = [$bucket];
             $controller = $controller->withBucket($bucket);
         }
-        $reflection->getMethod($route[RouteProperties::Action])->invokeArgs($controller, $route[RouteProperties::Parameters]);
+        $method = $reflection->getMethod($route[RouteProperties::Action]);
+        $params = $method->getParameters();
+        $values = $route[RouteProperties::Parameters];
+        $args = [];
+        $i = 0;
+        foreach($params as $param)
+        {
+            $name = $param->getName();
+            if (isset($values[$name]))
+                $args[$name] = $values[$name];
+            else if (isset($values[$i]))
+            {
+                $args[$name] = $values[$i];
+                $i++;
+            }
+        }
+        $method->invokeArgs($controller, $args);
         $controller->applyResponse();
     }
 

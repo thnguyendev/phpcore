@@ -37,11 +37,11 @@ $str2 .= " blo"; // you have cloned $str to $str2 by modifying $str2
 
 echo $str.PHP_EOL.$str2; // would give you: joe
 
-/*
+
 $container = new Container();
-$container = $container->withTransient(Animal::class, Dog::class, ["kiki", 4]);
+$container = $container->withTransient(Animal::class, Dog::class, ["name" => "kiki", 4]);
 // Create a list of animals
 $dog = $container->get(Animal::class);
 var_dump($dog);
-*/
+
 ?>
