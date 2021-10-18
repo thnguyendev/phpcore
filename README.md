@@ -72,7 +72,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
         }
     }
     ```
-5. As you see, the routes need HomeController class with the method index(). A controller class can have any name that you like but it must be derived from PHPWebCore/Controller class. The name "HomeController" comes from ASP.NET Core. Moreover, the index() method can take 1 parameter or nothing at all. The index() method will call view() method and pass "name" to $args. Now, we create a folder name "Controllers" inside "app" folder and create a file "HomeController.php". Please note that the name of the php file must be the same as the class name.
+5. As you see, the routes need HomeController class with the method index(). A controller class can have any name that you like but it must be derived from PHPWebCore/Controller class. The name "HomeController" comes from ASP.NET Core. Moreover, the index() method can take 1 argument or nothing at all. The index() method will call view() method and pass "name" to $args. Now, we create a folder name "Controllers" inside "app" folder and create a file "HomeController.php". Please note that the name of the php file must be the same as the class name.
     * HomeController.php
     ```php
     namespace App\Controllers;
