@@ -9,11 +9,16 @@ use App\Services\ProjectServiceInterface;
 use App\Services\ProjectService;
 use App\Services\UserServiceInterface;
 use App\Services\UserService;
+use PHPWebCore\ErrorServiceInterface;
 
 class Bootstrap extends App
 {
     public function process()
     {
+        //$this->container = $this->container
+        //    ->withTransient(ErrorServiceInterface::class, ExceptionHandler::class);
+        //throw new \Exception();
+
         // Initialize Database
         $db = new DatabaseService("sqlite:".static::getAppFolder()."/Project.db");
 

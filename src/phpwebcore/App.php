@@ -4,6 +4,18 @@ namespace PHPWebCore;
 use Psr\Http\Message\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\RequestFactory;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ServerRequestFactory;
+use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\StreamFactory;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UploadedFileFactory;
+use Psr\Http\Message\UploadedFileFactoryInterface;
+use Psr\Http\Message\UriFactory;
+use Psr\Http\Message\UriFactoryInterface;
 
 abstract class App
 {
@@ -17,19 +29,37 @@ abstract class App
 
     abstract public function process();
 
-    public function __construct
-    (
-        ContainerInterface $container,
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        string $appFolder,
-    )
+    public function withContainer(ContainerInterface $container)
     {
-        $this->container = $container;
-        $this->request = $request;
-        $this->response = $response;
+        $clone = clone $this;
+        $clone->container = $container;
+        return $clone;
+    }
+
+    public function withRequest(ServerRequestInterface $request)
+    {
+        $clone = clone $this;
+        $clone->request = $request;
+        return $clone;
+    }
+
+    public function withResponse(ResponseInterface $response)
+    {
+        $clone = clone $this;
+        $clone->response = $response;
+        return $clone;
+    }
+
+    public function withAppFolder(string $appFolder)
+    {
+        $clone = clone $this;
         static::$appFolder = $appFolder;
-        $this->checkMethod();
+        return $clone;
+    }
+
+    public function getContainer()
+    {
+        return $this->container;
     }
 
     public static function getAppFolder()
@@ -173,6 +203,41 @@ abstract class App
             header(Initialization::getProtocol()." 403 ".Response::ReasonPhrase[403], true);
             exit;
         }
+    }
+
+    public function initialize()
+    {
+        $uriFactory = new UriFactory();
+	    $streamFactory = new StreamFactory();
+	    $requestFactory = new ServerRequestFactory();
+	    $responseFactory = new ResponseFactory();
+        $this->container = (new Container())
+            ->withSingleton(RequestFactoryInterface::class, RequestFactory::class)
+            ->withSingleton(ResponseFactoryInterface::class, $responseFactory)
+            ->withSingleton(ServerRequestFactoryInterface::class, $requestFactory)
+            ->withSingleton(StreamFactoryInterface::class, $streamFactory)
+            ->withSingleton(UploadedFileFactoryInterface::class, UploadedFileFactory::class)
+            ->withSingleton(UriFactoryInterface::class, $uriFactory)
+            ->withSingleton(ErrorServiceInterface::class, ErrorService::class);
+	    $this->request = $requestFactory->createServerRequest(Initialization::getMethod(), "", Initialization::getServerParams())
+            ->withProtocolVersion(Initialization::getProtocolVersion())
+            ->withQueryParams(Initialization::getQueryParams())
+            ->withBody($streamFactory->createStreamFromFile(Initialization::getBody()))
+            ->withParsedBody(Initialization::getParsedBody())
+            ->withCookieParams(Initialization::getCookies())
+            ->withUploadedFiles(Initialization::getUploadedFiles())
+            ->withUri($uriFactory->createUri()
+                ->withScheme(Initialization::getScheme())
+                ->withUserInfo(Initialization::getUser(), Initialization::getPassword())
+                ->withHost(Initialization::getHost())
+                ->withPort(Initialization::getPort())
+                ->withPath(Initialization::getPath())
+                ->withQuery(Initialization::getQuery()));
+        foreach (Initialization::getHeaders() as $name => $value)
+            $this->request = $this->request->withHeader($name, $value);
+	    $this->response = $responseFactory->createResponse();
+        static::$appFolder = dirname(dirname(__FILE__))."/app";
+        $this->checkMethod();
     }
 }
 ?>

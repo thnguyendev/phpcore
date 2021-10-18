@@ -5,12 +5,12 @@ class Container implements ContainerInterface
 {
     protected $container = [];
 
-    public function withSingleton(string $id, string|object $entry, $parameters = [])
+    public function withSingleton(string $id, $entry, $parameters = [])
     {
         return $this->add(EntryLifetime::Singleton, $id, $entry, $parameters);
     }
 
-    public function withTransient(string $id, string $entry, $parameters = [])
+    public function withTransient(string $id, $entry, $parameters = [])
     {
         return $this->add(EntryLifetime::Transient, $id, $entry, $parameters);
     }
@@ -52,15 +52,13 @@ class Container implements ContainerInterface
         return isset($this->container[$id]);
     }
 
-    protected function add($lifetime, string $id, string|object $entry, $parameters = [])
+    protected function add($lifetime, string $id, $entry, $parameters = [])
     {
         if (!is_string($id))
             throw new \InvalidArgumentException("Id must be a string");
         $id = trim($id);
         if (empty($id))
             throw new \InvalidArgumentException("Id must not be empty");
-        if (!is_string($entry) && !is_object($entry))
-            throw new \InvalidArgumentException("Entry must be a string or an object");
         if (!is_array($parameters))
             $parameters = [$parameters];
         $clone = clone $this;
