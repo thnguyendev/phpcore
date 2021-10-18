@@ -5,7 +5,7 @@ use PHPWebCore\AppRoute;
 use PHPWebCore\RouteProperty;
 use PHPWebCore\HttpMethod;
 use App\Controllers\HomeController;
-use App\Controllers\ApiController;
+use App\Controllers\ProjectController;
 
 class Route extends AppRoute
 {
@@ -54,7 +54,7 @@ class Route extends AppRoute
                 // Root path can be empty or "/"
                 RouteProperty::Path => "project",
                 // Parameters is an a array of string, contains all parameters' names
-                RouteProperty::Controller => ApiController::class,
+                RouteProperty::Controller => ProjectController::class,
                 // Method name
                 RouteProperty::Action => "getProjectInfo",
                 // View file name with full path. The root is "app" folder

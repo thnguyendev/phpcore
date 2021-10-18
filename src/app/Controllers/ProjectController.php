@@ -3,7 +3,7 @@ namespace App\Controllers;
 
 use PHPWebCore\Controller;
 
-class ApiController extends Controller
+class ProjectController extends Controller
 {
     public function getProjectInfo()
     {

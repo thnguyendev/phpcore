@@ -133,7 +133,7 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
     use PHPWebCore\AppRoute;
     use PHPWebCore\RouteProperty;
     use PHPWebCore\HttpMethod;
-    use App\Controllers\ApiController;
+    use App\Controllers\ProjectController;
 
     class Route extends AppRoute
     {
@@ -142,27 +142,26 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
             $this->routes = 
             [
                 [
-                    // HTTP method attached to this action. If no declaration then all methods are accepted
-                    RouteProperty::Methods => [HttpMethod::Get],
                     // Root path can be empty or "/"
                     RouteProperty::Path => "project",
+                    // HTTP method attached to this action. If no declaration then all methods are accepted
+                    RouteProperty::Methods => [HttpMethod::Get],
                     // Parameters is an a array of string, contains all parameters' names
-                    RouteProperty::Controller => ApiController::class,
+                    RouteProperty::Controller => ProjectController::class,
                     // Method name
                     RouteProperty::Action => "getProjectInfo",
-                    // View file name with full path. The root is "app" folder
                 ]
             ];
         }
     }
     ```
-2. Next step is creating ApiController.php of the controller in "Controllers" folder. Set the response content type is application/json.
+2. Next step is creating ProjectController.php of the controller in "Controllers" folder. Set the response content type is application/json.
     ```php
     namespace App\Controllers;
 
     use PHPWebCore\Controller;
 
-    class ApiController extends Controller
+    class ProjectController extends Controller
     {
         public function getProjectInfo()
         {
@@ -172,25 +171,6 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
             header("Content-Type: application/json");
         }
     }
-    ```
-2. Modify startup file [project folder]/src/server/Startup.php
-    ```php
-    <?php
-        namespace phpcore;
-
-        use phpcore\core\App;
-        use phpcore\models\Routes;
-
-        class Startup extends App {
-            public function __construct() {
-                parent::__construct();
-                $this->enableCors();
-                $routeService = $this->getService("phpcore\\core\\RouteService");
-                $routeService->setRoutes(Routes::paths);
-                $routeService->mapRoute();
-            }
-        }
-    ?>
     ```
 3. It is almost done now. Use the routing and invoke action in your Bootstrap entry class then your app is ready to run.
     ```php
