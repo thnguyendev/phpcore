@@ -31,7 +31,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
         }
     }
     ```
-4. Now back to the app, your workspace in the app is just inside the "src/app" folder. Working with the routes of web app is our first step. PHPWebCore does not use the PHP attributes for the routing. The default routing is the Route class extends from PHPWebCore\AppRoute in Route.php. You need to implement initialize() method for Route class. In this example, we create 2 routes: one is the root path and the other is also the root path but it has "name" as parameter.
+4. Now back to the app, your workspace in the app is just inside the "src/app" folder. Working with the routes of web app is our first step. PHPWebCore does not use the PHP attributes for the routing. The default routing is the Route class extends from PHPWebCore\AppRoute in Route.php. You need to implement initialize() method for Route class. Routes should be defined here. The request Url paths split into paths and parameters. PHPWebCore will map it to the first route that has the most segments in path. In this example, we create 2 routes: one is the root path and the other is also the root path but it has "name" as parameter.
     ```php
     namespace App;
 
@@ -125,23 +125,53 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     * http://[your host]
     * http://[your host]/[name]
 ## Web API
-Steps to create a Web API with phpcore framework.
-1. Follow steps 1 to 3 from Quick start to setup new project.
-2. Create Routes [project folder]/src/server/models/Routes.php
+In this turtorial, we will create a PHPWebCore API. First thing first, you need to create a PHPWebCore project.
+1. When you have your project, define your API route that uses GET method. This api just simply returns the information of your project in JSON.
     ```php
-    <?php
-        namespace phpcore\models;
+    namespace App;
 
-        use phpcore\core\RouteDefine;
+    use PHPWebCore\AppRoute;
+    use PHPWebCore\RouteProperty;
+    use PHPWebCore\HttpMethod;
+    use App\Controllers\ApiController;
 
-        class Routes {
-            public const paths = array(
-                "getinfo" => array (
-                    RouteDefine::controller => "phpcore\\controllers\\GetInfoController"
-                )
-            );
+    class Route extends AppRoute
+    {
+        public function initialize()
+        {
+            $this->routes = 
+            [
+                [
+                    // HTTP method attached to this action. If no declaration then all methods are accepted
+                    RouteProperty::Methods => [HttpMethod::Get],
+                    // Root path can be empty or "/"
+                    RouteProperty::Path => "project",
+                    // Parameters is an a array of string, contains all parameters' names
+                    RouteProperty::Controller => ApiController::class,
+                    // Method name
+                    RouteProperty::Action => "getProjectInfo",
+                    // View file name with full path. The root is "app" folder
+                ]
+            ];
         }
-    ?>
+    }
+    ```
+2. Next step is creating ApiController.php of the controller in "Controllers" folder. Set the response content type is application/json.
+    ```php
+    namespace App\Controllers;
+
+    use PHPWebCore\Controller;
+
+    class ApiController extends Controller
+    {
+        public function getProjectInfo()
+        {
+            // return json
+            echo "{ 'Project': 'PHPWebCore Api Example', 'Framework': 'PHPWebCore' }";
+            // set content type is application/json
+            header("Content-Type: application/json");
+        }
+    }
     ```
 2. Modify startup file [project folder]/src/server/Startup.php
     ```php
@@ -162,23 +192,30 @@ Steps to create a Web API with phpcore framework.
         }
     ?>
     ```
-3. Create an API controller [project folder]/src/server/controllers/api/GetInfoController.php
+3. It is almost done now. Use the routing and invoke action in your Bootstrap entry class then your app is ready to run.
     ```php
-    <?php
-        namespace phpcore\controllers;
+    namespace App;
 
-        use phpcore\core\ApiController;
-        use phpcore\core\ContentType;
+    use PHPWebCore\App;
 
-        class GetInfoController extends ApiController {
-            public function get() {
-                ContentType::applicationJson();
-                echo("{ 'Name': 'PHP Core', 'Author': 'Hung Thanh Nguyen' }");
-            }
+    class Bootstrap extends App
+    {
+        public function process()
+        {
+            // Add default routing
+            $this->setRouting(new Route());
+            
+            // Use routing to map route
+            $this->useRouting();
+
+            // Invoke the action to fulfill the request
+            // Data likes user information from Authorization can be passed to controller by bucket
+            $this->invokeAction(bucket: null);
         }
-    ?>
+    }
     ```
-
+4. Is is too simple enough to you!? Run your project and use below Url in a browser to see your work.
+    * http://[your host]/project
 ## Use Doctrine ORM to work with Sqlite database
 This example will create a Web API that returns data from SQLite with Doctrine, make sure that SQLite PDO has been enabled in PHP configuration.
 1. Follow steps 1 to 3 from Quick start to setup new project.
