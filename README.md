@@ -196,225 +196,199 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
     ```
 4. Is it too simple? Run your project and use below Url in a browser to see your work.
     * http://[your host]/project
-## Use Doctrine ORM to work with Sqlite database
-This example will create a Web API that returns data from SQLite with Doctrine, make sure that SQLite PDO has been enabled in PHP configuration.
-1. Follow steps 1 to 3 from Quick start to setup new project.
-2. Modify file [project folder]/composer.json
+## RedBeanPHP and SQLite
+This example desmonstrates how your PHPWebCore app work with databases. We use RedBeanPHP and SQLite because it is so easy to included to your app. Just make sure you have SQLite enabled in your php.ini.
+    ```ini
+    extension=pdo_sqlite
+    extension=sqlite3
+    ```
+1. Before we continue, let's make sure you created your PHPWebCore and update composer.json to include RedBeanPHP to your app and run update command from Composer
+    * composer.json
     ```json
     {
-        "name": "thnguyendev/phpcore",
-        "description": "The phpcore framework.",
-        "version": "3.0.0",
-        "keywords": ["framework", "phpcore"],
+        "name": "thnguyendev/phpwebcore",
+        "description": "The PHPWebCore framework",
+        "version": "4.0.0",
+        "keywords": ["PHPCore", "PHP", "MVC framework", "OOP", "PSR", "Dependency Injection"],
         "license": "MIT",
         "type": "project",
         "autoload": {
             "psr-4": {
-                "phpcore\\": "src/server"
+                "App\\": "src/app",
+                "PHPWebCore\\": "src/phpwebcore",
+                "Psr\\": "src/psr"
             }
-         },
+        },
         "require": {
-            "doctrine/orm": "*"
+            "php": ">=7.0",
+            "psr/http-message": ">=1.0.1",
+            "psr/http-factory": ">=1.0.1",
+            "gabordemooij/redbean": "dev-master"
+        },
+        "require-dev": {
+            "phpunit/phpunit": ">=9.5.10"
         }
     }
     ```
-    Run below command in console to update project
+    * Run Composer update command
+    ```shell
+    composer update
     ```
-    > composer update
-    ```
-3. Create Info class [project folder]/src/server/models/Info.php
+2. We build 2 services for our app, one is DatabaseService to work with SQLite. It creates a connection and initializes the database in the constructor. It also provides a method to stop the connection before the app stops. The other service is ProjectService which provides the data from database. We use this service as a dependency injection of the controller, so we need to build an interface for this service.
+You need to create "Services" folder in your app folder to put all of these servies in.
+    * DatabaseService.php
     ```php
-    <?php
-        namespace phpcore\models;
+    namespace App\Services;
 
-        use Doctrine\ORM\Mapping as ORM;
+    use RedBeanPHP\R;
 
-        /**
-        * @ORM\Entity
-        * @ORM\Table(name="Info")
-        **/
-        class Info {
-            /**
-            * @ORM\Id
-            * @ORM\Column(type="integer")
-            * @ORM\GeneratedValue
-            * @var int
-            **/
-            private $ID;
+    class DatabaseService
+    {
+        public const Project = "porject";
+        public const ProjectName = "name";
+        public const ProjectFramework = "framework";
 
-            /**
-            * @ORM\Column(type="string")
-            * @var string
-            **/
-            private $Name;
-
-            /**
-            * @ORM\Column(type="string")
-            * @var string
-            **/
-            private $Author;
-
-            public function getID() {
-                return $this->ID;
-            }
-
-            public function getName() {
-                return $this->Name;
-            }
-
-            public function setName($name) {
-                $this->Name = $name;
-            }
-
-            public function getAuthor() {
-                return $this->Author;
-            }
-
-            public function setAuthor($author) {
-                $this->Author = $author;
+        public function __construct(string $connectionString)
+        {
+            // Open a connaction
+            R::setup($connectionString);
+            $project = R::load(static::Project, 1);
+            // No database then create one
+            if ($project["id"] === 0)
+            {
+                $project = R::dispense(static::Project);
+                $project[static::ProjectName] = "PHPWebCore with RedBeanPHP and SQLite";
+                $project[static::ProjectFramework] = "PHPWebCore";
+                R::store($project);
             }
         }
-    ?>
-    ```
-4. Create DataService class [project folder]/src/server/services/DataService.php
-    ```php
-    <?php
-        namespace phpcore\services;
 
-        use Exception;
-        use Doctrine\ORM\Tools\Setup;
-        use Doctrine\ORM\EntityManager;
-        use phpcore\models\Info;
-
-        class DataService {
-
-            private $entityManager;
-
-            public function __construct() {
-                try {
-                    // Create a simple "default" Doctrine ORM configuration for Annotations
-                    $isDevMode = true;
-                    $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . "/../models"), $isDevMode, null, null, false);
-
-                    // database configuration parameters for Sqlite
-                    $conn = array(
-                        'driver' => 'pdo_sqlite',
-                        'path' => __DIR__ . '/../db.sqlite',
-                    );
-
-                    // obtaining the entity manager
-                    $this->entityManager = EntityManager::create($conn, $config);
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function initialize() {
-                try {
-                    $infoRepository = $this->entityManager->getRepository("phpcore\\models\\Info");
-                    $info = $infoRepository->findAll();
-                    if (count($info) == 0) {
-                        $newInfo = new Info();
-                        $newInfo->setName("PHP Core");
-                        $newInfo->setAuthor("Hung Thanh Nguyen");
-                        $this->entityManager->persist($newInfo);
-                        $this->entityManager->flush();
-                    }
-                }
-                catch (Exception $e) {
-                    throw $e;
-                }
-            }
-
-            public function getEntityManager() {
-                return $this->entityManager;
-            }
+        public function close()
+        {
+            // Close the connection
+            R::close();
         }
-    ?>
+    }
     ```
-5. Create database schema with Doctrine command-line interface. First, create configuration file [project folder]/cli-config.php
+    * ProjectServiceInterface.php
     ```php
-    <?php
-        require_once "vendor/autoload.php";
+    namespace App\Services;
 
-        use phpcore\services\DataService;
-
-        $dataService = new DataService();
-        return \Doctrine\ORM\Tools\Console\ConsoleRunner::createHelperSet($dataService->getEntityManager());
-    ?>
+    interface ProjectServiceInterface
+    {
+        public function getProjectInfo();
+    }
     ```
-    Then run below command
-    ```
-    > "vendor/bin/doctrine" orm:schema-tool:create
-    ```
-6. Create Routes [project folder]/src/server/models/Routes.php
+    * ProjectService.php
     ```php
-    <?php
-        namespace phpcore\models;
+    namespace App\Services;
 
-        use phpcore\core\RouteDefine;
+    use PHPWebCore\NotFoundException;
+    use RedBeanPHP\R;
 
-        class Routes {
-            public const paths = array(
-                "getinfo" => array (
-                    RouteDefine::controller => "phpcore\\controllers\\GetInfoController"
-                )
-            );
+    class ProjectService implements ProjectServiceInterface
+    {
+        public function getProjectInfo()
+        {
+            $project = R::load(DatabaseService::Project, 1);
+            if ($project["id"] === 0)
+                throw new NotFoundException("Project not found", 404);
+            return json_encode($project);
         }
-    ?>
+    }
     ```
-7. Modify startup file [project folder]/src/server/Startup.php
+3. The last step we create a controller, declare a route and update the Bootstrap. Beside use routing and invoke controller action in Boostrap, we need to add ProjectService to app's container, initialize the database and close it before app stops.
+    * ProjectController.php
     ```php
-    <?php
-        namespace phpcore;
+    namespace App\Controllers;
 
-        use phpcore\core\App;
-        use phpcore\models\Routes;
-        use phpcore\services\DataService;
+    use App\Services\ProjectServiceInterface;
+    use PHPWebCore\Controller;
 
-        class Startup extends App {
-            public function __construct() {
-                parent::__construct();
-                $this->enableCors();
-                $routeService = $this->getService("phpcore\\core\\RouteService");
-                $routeService->setRoutes(Routes::paths);
-                $routeService->mapRoute();
-
-                $this->addService(new DataService());
-                $this->getService("phpcore\\services\\DataService")->initialize();
-            }
+    class ProjectController extends Controller
+    {
+        private $projectService;
+        public function __construct(ProjectServiceInterface $projectService)
+        {
+            $this->projectService = $projectService;
         }
-    ?>
+
+        public function getProjectInfo()
+        {
+            // return json
+            echo $this->projectService->getProjectInfo();
+            // set content type is application/json
+            header("Content-Type: application/json");
+        }
+    }
     ```
-8. Create an API controller [project folder]/src/server/controllers/api/GetInfoController.php
+    * Route.php
     ```php
-    <?php
-        namespace phpcore\controllers;
+    namespace App;
 
-        use Exception;
-        use phpcore\core\ApiController;
-        use phpcore\core\ContentType;
-        use phpcore\core\HttpCodes;
+    use PHPWebCore\AppRoute;
+    use PHPWebCore\RouteProperty;
+    use PHPWebCore\HttpMethod;
+    use App\Controllers\ProjectController;
 
-        class GetInfoController extends ApiController {
-            public function get() {
-                $dataService = $this->getApp()->getService("phpcore\\services\\DataService");
-                if (!isset($dataService)) {
-                    throw new Exception("Data service not found", HttpCodes::internalServerError);
-                }
-                $entityManager = $dataService->getEntityManager();
-                $infoRepository = $entityManager->getRepository("phpcore\\models\\Info");
-                $info = $infoRepository->findAll();
-                if (count($info) > 0) {
-                    ContentType::applicationJson();
-                    printf("{ 'Name': '%s', 'Author': '%s' }", $info[0]->getName(), $info[0]->getAuthor());
-                }
-            }
+    class Route extends AppRoute
+    {
+        public function initialize()
+        {
+            $this->routes = 
+            [
+                [
+                    // Root path can be empty or "/"
+                    RouteProperty::Path => "project",
+                    // HTTP method attached to this action. If no declaration then all methods are accepted
+                    RouteProperty::Methods => [HttpMethod::Get],
+                    // Parameters is an a array of string, contains all parameters' names
+                    RouteProperty::Controller => ProjectController::class,
+                    // Method name
+                    RouteProperty::Action => "getProjectInfo",
+                    // View file name with full path. The root is "app" folder
+                ]
+            ];
         }
-    ?>
+    }
     ```
+    * Bootstrap.php
+    ```php
+    namespace App;
 
+    use App\Services\DatabaseService;
+    use App\Services\ProjectServiceInterface;
+    use App\Services\ProjectService;
+    use PHPWebCore\App;
+
+    class Bootstrap extends App
+    {
+        public function process()
+        {
+            // Initialize Database
+            $db = new DatabaseService("sqlite:".static::getAppFolder()."/Project.db");
+
+            // Add services to container
+            $this->container = $this->container
+                ->withTransient(ProjectServiceInterface::class, ProjectService::class);
+
+            // Add default routing
+            $this->setRouting(new Route());
+            
+            // Use routing to map route
+            $this->useRouting();
+
+            // Invoke the action to fulfill the request
+            // Data likes user information from Authorization can be passed to controller by bucket
+            $this->invokeAction(bucket: null);
+
+            // Close Database connection
+            $db->close();
+        }
+    }
+    ```
+4. Now your PHPWebCore app is ready to run. When the first request send to your app. It will creates a SQLite file name "Project.db" in your app folder. Try the following Url
+    * http://[your host]/project
 ## Firebase jwt authorization
 This example demonstrate authentication with Firebase Jwt.
 1. Follow steps 1 to 3 from Quick start to setup new project.
