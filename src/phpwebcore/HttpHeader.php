@@ -7,5 +7,6 @@ class HttpHeader extends Enum
     const ContentLength = "Content-Length";
     const Origin = "Origin";
     const AccessControlAllowOrigin = "Access-Control-Allow-Origin";
+    const Authorization = "Authorization";
 }
 ?>

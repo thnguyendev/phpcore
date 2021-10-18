@@ -6,6 +6,7 @@ use PHPWebCore\RouteProperty;
 use PHPWebCore\HttpMethod;
 use App\Controllers\HomeController;
 use App\Controllers\ProjectController;
+use App\Controllers\UserController;
 
 class Route extends AppRoute
 {
@@ -18,7 +19,7 @@ class Route extends AppRoute
                 RouteProperty::Path => "",
                 // Parameters is an a array of string, contains all parameters' names
                 RouteProperty::Controller => HomeController::class,
-                // Method name
+                // Action method name
                 RouteProperty::Action => "index",
                 // View file name with full path. The root is "app" folder
                 RouteProperty::View => "Views/HomeView",
@@ -43,22 +44,45 @@ class Route extends AppRoute
                 RouteProperty::Parameters => ["name"],
                 // Full class name with namespace. "App" is root namespace of the app
                 RouteProperty::Controller => HomeController::class,
-                // Method name
+                // Action method name
                 RouteProperty::Action => "index",
                 // View file name with full path. The root is "app" folder
                 RouteProperty::View => "Views/HomeView",
             ],
             [
-                // HTTP method attached to this action. If no declaration then all methods are accepted
-                RouteProperty::Methods => [HttpMethod::Get],
                 // Root path can be empty or "/"
                 RouteProperty::Path => "project",
+                // HTTP method attached to this action. If no declaration then all methods are accepted
+                RouteProperty::Methods => [HttpMethod::Get],
                 // Parameters is an a array of string, contains all parameters' names
                 RouteProperty::Controller => ProjectController::class,
-                // Method name
+                // Action method name
                 RouteProperty::Action => "getProjectInfo",
-                // View file name with full path. The root is "app" folder
-            ]
+            ],
+            [
+                // Root path can be empty or "/"
+                RouteProperty::Path => "login",
+                // HTTP method attached to this action. If no declaration then all methods are accepted
+                RouteProperty::Methods => [HttpMethod::Get],
+                // Parameters is an a array of string, contains all parameters' names
+                RouteProperty::Controller => UserController::class,
+                // Parameters is an a array of string, contains all parameters' names
+                RouteProperty::Parameters => ["username", "password"],
+                // Action method name
+                RouteProperty::Action => "login",
+            ],
+            [
+                // Root path can be empty or "/"
+                RouteProperty::Path => "user",
+                // HTTP method attached to this action. If no declaration then all methods are accepted
+                RouteProperty::Methods => [HttpMethod::Get],
+                // Parameters is an a array of string, contains all parameters' names
+                RouteProperty::Controller => UserController::class,
+                // Action method name
+                RouteProperty::Action => "getUserInfo",
+                // If true, this action need to be authorized
+                RouteProperty::Authorized => true,
+            ],
         ];
     }
 }

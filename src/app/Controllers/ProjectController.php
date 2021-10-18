@@ -1,8 +1,8 @@
 <?php
 namespace App\Controllers;
 
-use App\Services\ProjectServiceInterface;
 use PHPWebCore\Controller;
+use App\Services\ProjectServiceInterface;
 
 class ProjectController extends Controller
 {

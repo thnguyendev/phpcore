@@ -32,6 +32,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     }
     ```
 4. Now back to the app, your workspace in the app is just inside the "src/app" folder. Working with the routes of web app is our first step. PHPWebCore does not use the PHP attributes for the routing. The default routing is the Route class extends from PHPWebCore\AppRoute in Route.php. You need to implement initialize() method for Route class. Routes should be defined here. The request Url paths split into paths and parameters. PHPWebCore will map it to the first route that has the most segments in path. In this example, we create 2 routes: one is the root path and the other is also the root path but it has "name" as parameter.
+    * Route.php
     ```php
     namespace App;
 
@@ -50,7 +51,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
                     RouteProperty::Path => "",
                     // Parameters is an a array of string, contains all parameters' names
                     RouteProperty::Controller => HomeController::class,
-                    // Method name
+                    // Action method name
                     RouteProperty::Action => "index",
                     // View file name with full path. The root is "app" folder
                     RouteProperty::View => "Views/HomeView",
@@ -62,7 +63,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
                     RouteProperty::Parameters => ["name"],
                     // Full class name with namespace. "App" is root namespace of the app
                     RouteProperty::Controller => HomeController::class,
-                    // Method name
+                    // Action method name
                     RouteProperty::Action => "index",
                     // View file name with full path. The root is "app" folder
                     RouteProperty::View => "Views/HomeView",
@@ -72,6 +73,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     }
     ```
 5. As you see, the routes need HomeController class with the method index(). A controller class can have any name that you like but it must be derived from PHPWebCore/Controller class. The name "HomeController" comes from ASP.NET Core. Moreover, the index() method can 1 parameter or nothing at all. The index() method will call view() method and pass "name" to $args. Now, we create a folder name "Controllers" inside "app" folder and create a file "HomeController.php". Please note that the name of the php file must be the same as the class name.
+    * HomeController.php
     ```php
     namespace App\Controllers;
 
@@ -85,7 +87,8 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
         }
     }
     ```
-6. The routes also need a view for the controller. It recommends to use HTML or PHP for the view file. You could put PHP codes inside your HTML template. According to our declaration in routers, the app will look for the view "HomeView", "HomeView.php" or "HomeView.html" in "Views" folder inside "app" folder. So, we create "Views" folder inside "src/app", then create "HomeView.php" inside "Views" folder. 
+6. The routes also need a view for the controller. It recommends to use HTML or PHP for the view file. You could put PHP codes inside your HTML template. According to our declaration in routers, the app will look for the view "HomeView", "HomeView.php" or "HomeView.html" in "Views" folder inside "app" folder. So, we create "Views" folder inside "src/app", then create "HomeView.php" inside "Views" folder.
+    * HomeView.php
     ```html
     <!DOCTYPE html>
     <html lang="en">
@@ -100,6 +103,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     </html>
     ```
 7. So, everything is ready except the last step, the app entry point. Default PHPWebCore app entry class is Bootstrap, which is devired from PHPWebCore/App. Yes, it is Bootstrap instead of Startup. Did you feel the ASP.NET Core until now :D? We need to implement process() method. We will make flow of processing of the app here, such as add servcies to app's container, redirect to HTTPS, allow CORS (origin only), use routing, invoke action, etc... You can also run middlewares here, before and after invoke action like authorization. In this example, we only use routing and invoke action after that.
+    * Bootstrap.php
     ```php
     namespace App;
 
@@ -127,6 +131,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
 ## Web API
 In this tutorial, we will create a PHPWebCore API. First thing first, you need to create a PHPWebCore project.
 1. When you have your project, define your API route that uses GET method. This api just simply returns the information of your project in JSON.
+    * Route.php
     ```php
     namespace App;
 
@@ -148,7 +153,7 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
                     RouteProperty::Methods => [HttpMethod::Get],
                     // Parameters is an a array of string, contains all parameters' names
                     RouteProperty::Controller => ProjectController::class,
-                    // Method name
+                    // Action method name
                     RouteProperty::Action => "getProjectInfo",
                 ]
             ];
@@ -156,6 +161,7 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
     }
     ```
 2. Next step is creating ProjectController.php of the controller in "Controllers" folder. Set the response content type is application/json.
+    * ProjectController.php
     ```php
     namespace App\Controllers;
 
@@ -173,6 +179,7 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
     }
     ```
 3. It is almost done now. Use the routing and invoke action in your Bootstrap entry class then your app is ready to run.
+    * Bootstrap.php
     ```php
     namespace App;
 
@@ -208,9 +215,9 @@ This example desmonstrates how your PHPWebCore app work with databases. We use R
     ```json
     {
         "name": "thnguyendev/phpwebcore",
-        "description": "The PHPWebCore framework",
+        "description": "PHPWebCore framework",
         "version": "4.0.0",
-        "keywords": ["PHPCore", "PHP", "MVC framework", "OOP", "PSR", "Dependency Injection"],
+        "keywords": ["PHPWebCore", "PHP", "MVC framework", "OOP", "PSR-7", "PSR-17", "Dependency Injection"],
         "license": "MIT",
         "type": "project",
         "autoload": {
@@ -224,7 +231,7 @@ This example desmonstrates how your PHPWebCore app work with databases. We use R
             "php": ">=7.0",
             "psr/http-message": ">=1.0.1",
             "psr/http-factory": ">=1.0.1",
-            "gabordemooij/redbean": "dev-master"
+            "gabordemooij/redbean": ">=5.7"
         },
         "require-dev": {
             "phpunit/phpunit": ">=9.5.10"
@@ -303,8 +310,8 @@ You need to create "Services" folder in your app folder to put all of these serv
     ```php
     namespace App\Controllers;
 
-    use App\Services\ProjectServiceInterface;
     use PHPWebCore\Controller;
+    use App\Services\ProjectServiceInterface;
 
     class ProjectController extends Controller
     {
@@ -345,9 +352,8 @@ You need to create "Services" folder in your app folder to put all of these serv
                     RouteProperty::Methods => [HttpMethod::Get],
                     // Parameters is an a array of string, contains all parameters' names
                     RouteProperty::Controller => ProjectController::class,
-                    // Method name
+                    // Action method name
                     RouteProperty::Action => "getProjectInfo",
-                    // View file name with full path. The root is "app" folder
                 ]
             ];
         }
@@ -390,194 +396,217 @@ You need to create "Services" folder in your app folder to put all of these serv
     ```
 4. Now your PHPWebCore app is ready to run. When the first request send to your app. It will creates a SQLite file name "Project.db" in your app folder. Try the following Url
     * http://[your host]/project
-## Firebase jwt authorization
-This example demonstrate authentication with Firebase Jwt.
-1. Follow steps 1 to 3 from Quick start to setup new project.
-2. Modify file [project folder]/composer.json
+## Firebase PHP-JWT authorization
+This time we make PHPWebCore app work with PHP-JWT authorization.
+1. We create new PHPWebCore project and add Firebase PHP-JWT in
+    * composer.json
     ```json
     {
-        "name": "thnguyendev/phpcore",
-        "description": "The phpcore framework.",
-        "version": "3.0.0",
-        "keywords": ["framework", "phpcore"],
+        "name": "thnguyendev/phpwebcore",
+        "description": "PHPWebCore framework",
+        "version": "4.0.0",
+        "keywords": ["PHPWebCore", "PHP", "MVC framework", "OOP", "PSR-7", "PSR-17", "Dependency Injection"],
         "license": "MIT",
         "type": "project",
         "autoload": {
             "psr-4": {
-                "phpcore\\": "src/server"
+                "App\\": "src/app",
+                "PHPWebCore\\": "src/phpwebcore",
+                "Psr\\": "src/psr"
             }
-         },
+        },
         "require": {
-            "firebase/php-jwt": "*"
+            "php": ">=7.0",
+            "psr/http-message": ">=1.0.1",
+            "psr/http-factory": ">=1.0.1",
+            "firebase/php-jwt": ">=5.4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": ">=9.5.10"
         }
     }
     ```
-    Run below command in console to update project
-    ```
+    * Run Composer update command
+    ```shell
     composer update
     ```
-3. Create AuthorizationService class [project folder]/src/server/services/AuthorizationService.php
+2. We build UserService to provide 2 functions are login() and authorize(). The login() method needs 2 parameters are $username and $password and it generates a token if $username and $password are matched with "username" and "password". The authorize() finds a $token from query string and return payload if $token is valid. We don't use Authorization header in request but the query string so that we can use the token in Url.
+    * UserServiceInterface.php
     ```php
-    <?php
-        namespace phpcore\services;
+    namespace App\Services;
 
-        use Exception;
-        use phpcore\core\HttpCodes;
-        use phpcore\core\RouteDefine;
-        use Firebase\JWT\JWT;
+    interface UserServiceInterface
+    {
+        public function login($username, $password);
+        public function authorize();
+    }
+    ```
+    * UserService.php
+    ```php
+    namespace App\Services;
 
-        class AuthorizationService {
-            private const key = "example_key";
-            private $app;
+    use Psr\Http\Message\ServerRequestInterface;
+    use Firebase\JWT\JWT;
 
-            public function __construct($app) {
-                $this->app = $app;
+    class UserService implements UserServiceInterface
+    {
+        private const key = "secret key";
+        private $request;
+
+        public function __construct(ServerRequestInterface $request)
+        {
+            $this->request = $request;
+        }
+
+        public function login($username, $password)
+        {
+            if (!is_string($username) || $username !== "username")
+                throw new \Exception("Invalid username", 400);
+            if (!is_string($password) || $password !== "password")
+                throw new \Exception("Invalid password", 400);
+            $time = time();
+            $payload =
+            [
+                'iss' => "PHP-JWT",
+                'iat' => $time,
+                'nbf' => $time + 10,
+                'exp' => $time + 600,
+                'user' => $username,
+            ];
+            return JWT::encode($payload, $this::key);
+        }
+
+        public function authorize()
+        {
+            $query = $this->request->getQueryParams();
+            $token = "";
+            if (isset($query["token"]))
+                $token = $query["token"];
+            try
+            {
+                return JWT::decode($token, $this::key, array("HS256"));
             }
-
-            public function authenticate($input) {
-                $jwt = null;   
-                if ($input->userName === "admin" && $input->password === "nopassword") {
-                    $requestService = $this->app->getService("phpcore\\core\\RequestService");
-                    if (!isset($requestService)) {
-                        throw new Exception("Request service not found", HttpCodes::internalServerError);
-                    }
-                    $time = time();
-                    $payload = [
-                        'iss' => $requestService->getServer()["Name"],
-                        'iat' => $time,
-                        'nbf' => $time + 10,
-                        'exp' => $time + 600,
-                        'user' => [
-                            'userName' => $input->userName
-                        ]
-                    ];
-                    $jwt = JWT::encode($payload, $this::key);
-                }
-                return $jwt;
-            }
-
-            public function authorize() {
-                $requestService = $this->app->getService("phpcore\\core\\RequestService");
-                if (!isset($requestService)) {
-                    throw new Exception("Request service not found", HttpCodes::internalServerError);
-                }
-                $routeService = $this->app->getService("phpcore\\core\\RouteService");
-                if (!isset($routeService)) {
-                    throw new Exception("Route service not found", HttpCodes::internalServerError);
-                }
-                $authorized = true;
-                $route = $routeService->getRoute();
-                if (isset($route)) {
-                    if (isset($route[RouteDefine::authorize]) && $route[RouteDefine::authorize] === true) {
-                        $authorized = false;
-                        if (isset($requestService->getHeader()["Authorization"])) {
-                            list($jwt) = sscanf($requestService->getHeader()["Authorization"], "Bearer %s");
-                            if ($jwt) {
-                                try {
-                                    $token = JWT::decode($jwt, $this::key, array("HS256"));
-                                    $authorized = true;
-                                }
-                                catch(Exception $e) { }
-                            }
-                        }
-                    }
-                }
-                if (!$authorized) {
-                    throw new Exception("Authorization failed", HttpCodes::unauthorized);
-                }
+            catch (\Throwable $e)
+            {
+                throw new \Exception($e->getMessage(), 403);
             }
         }
-    ?>
+    }
     ```
-4. Create Routes [project folder]/src/server/models/Routes.php
+3. We also create a controller has 2 action methods login() and getUserInfo(). The login() method get 2 parameters $username and $password from the Url path rather then from POST data so we can test it in a browser easily. The other getUserInfo() method need to be authorized and print the payload from the valid token.
+    * UserController.php
     ```php
-    <?php
-        namespace phpcore\models;
+    namespace App\Controllers;
 
-        use phpcore\core\RouteDefine;
+    use PHPWebCore\Controller;
+    use App\Services\UserServiceInterface;
 
-        class Routes {
-            public const paths = array(
-                "authenticate" => array (
-                    RouteDefine::controller => "phpcore\\controllers\\AuthenticateUserController"
-                ),
-                "getinfo" => array (
-                    RouteDefine::controller => "phpcore\\controllers\\GetInfoController",
-                    RouteDefine::authorize => true
-                )
-            );
+    class UserController extends Controller
+    {
+        private $userService;
+
+        public function __construct(UserServiceInterface $userService)
+        {
+            $this->userService = $userService;
         }
-    ?>
+
+        public function login($username, $password)
+        {
+            $token = $this->userService->login($username, $password);
+            echo "token = {$token}";
+        }
+
+        public function getUserInfo()
+        {
+            if (isset($this->bucket["user"]))
+                echo json_encode($this->bucket["user"]);
+            header("Content-Type: application/json");
+        }
+    }
     ```
-5. Modify startup file [project folder]/src/server/Startup.php
+4. Now we just need to declare routes and configure app entry point then it's done.
+    * Route.php
     ```php
-    <?php
-        namespace phpcore;
+    namespace App;
 
-        use phpcore\core\App;
-        use phpcore\models\Routes;
-        use phpcore\services\AuthorizationService;
+    use PHPWebCore\AppRoute;
+    use PHPWebCore\RouteProperty;
+    use PHPWebCore\HttpMethod;
+    use App\Controllers\UserController;
 
-        class Startup extends App {
-            public function __construct() {
-                parent::__construct();
-                $this->enableCors();
-                $routeService = $this->getService("phpcore\\core\\RouteService");
-                $routeService->setRoutes(Routes::paths);
-                $routeService->mapRoute();
+    class Route extends AppRoute
+    {
+        public function initialize()
+        {
+            $this->routes = 
+            [
+                [
+                    // Root path can be empty or "/"
+                    RouteProperty::Path => "login",
+                    // HTTP method attached to this action. If no declaration then all methods are accepted
+                    RouteProperty::Methods => [HttpMethod::Get],
+                    // Parameters is an a array of string, contains all parameters' names
+                    RouteProperty::Controller => UserController::class,
+                    // Parameters is an a array of string, contains all parameters' names
+                    RouteProperty::Parameters => ["username", "password"],
+                    // Action method name
+                    RouteProperty::Action => "login",
+                ],
+                [
+                    // Root path can be empty or "/"
+                    RouteProperty::Path => "user",
+                    // HTTP method attached to this action. If no declaration then all methods are accepted
+                    RouteProperty::Methods => [HttpMethod::Get],
+                    // Parameters is an a array of string, contains all parameters' names
+                    RouteProperty::Controller => UserController::class,
+                    // Action method name
+                    RouteProperty::Action => "getUserInfo",
+                    // If true, this action need to be authorized
+                    RouteProperty::Authorized => true,
+                ],
+            ];
+        }
+    }
+    ```
+    * Bootstrap.php
+    ```php
+    namespace App;
 
-                $this->addService(new AuthorizationService($this));
-                $this->getService("phpcore\\services\\AuthorizationService")->authorize();
+    use Psr\Http\Message\ServerRequestInterface;
+    use PHPWebCore\App;
+    use PHPWebCore\RouteProperty;
+    use App\Services\UserServiceInterface;
+    use App\Services\UserService;
+    
+    class Bootstrap extends App
+    {
+        public function process()
+        {
+            // Add services to container
+            $this->container = $this->container
+                ->withSingleton(ServerRequestInterface::class, $this->request)
+                ->withTransient(UserServiceInterface::class, UserService::class);
+
+            // Add default routing
+            $this->setRouting(new Route());
+            
+            // Use routing to map route
+            $this->useRouting();
+
+            $bucket = [];
+            // Authorize here
+            if (isset($this->route[RouteProperty::Authorized]) && $this->route[RouteProperty::Authorized])
+            {
+                $userService = $this->container->get(UserServiceInterface::class);
+                $bucket["user"] = $userService->authorize();
             }
+
+            // Invoke the action to fulfill the request
+            // Data likes user information from Authorization can be passed to controller by bucket
+            $this->invokeAction(bucket: $bucket);
         }
-    ?>
+    }
     ```
-6. Create Authenticate User API controller [project folder]/src/server/controllers/api/AuthenticateUserController.php
-    ```php
-    <?php
-        namespace phpcore\controllers;
-
-        use phpcore\core\ApiController;
-        use phpcore\core\ContentType;
-
-        class AuthenticateUserController extends ApiController {
-            public function post() {
-                $requestService = $this->getApp()->getService("phpcore\\core\\RequestService");
-                if (!isset($requestService)) {
-                    throw new Exception("Request service not found", HttpCodes::internalServerError);
-                }
-                $authorizationService = $this->getApp()->getService("phpcore\\services\\AuthorizationService");
-                if (!isset($authorizationService)) {
-                    throw new Exception("Authorization service not found", HttpCodes::internalServerError);
-                }
-                $input = json_decode($requestService->getBody());
-                $jwt = $authorizationService->authenticate($input);
-                ContentType::applicationJson();
-                printf("{ 'token': '%s' }", $jwt);
-            }
-        }
-    ?>
-    ```
-7. Create an API controller [project folder]/src/server/controllers/api/GetInfoController.php
-    ```php
-    <?php
-        namespace phpcore\controllers;
-
-        use Exception;
-        use phpcore\core\ApiController;
-        use phpcore\core\ContentType;
-        use phpcore\core\HttpCodes;
-
-        class GetInfoController extends ApiController {
-            public function get() {
-                ContentType::applicationJson();
-                echo("{ 'Name': 'PHP Core', 'Author': 'Hung Thanh Nguyen' }");
-            }
-        }
-    ?>
-    ```
-## Running tests
-Run the unit tests
-    ```
-    ./vendor/bin/phpunit tests
-    ```
+5. Run your PHPWebCore app and use the login Url to get a token. Then, we use the token in user Url to get the payload from the token.
+    * http://[your host]/login/username/password
+    * http://[your host]/user?token=[token]
