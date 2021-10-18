@@ -216,7 +216,7 @@ This example desmonstrates how your PHPWebCore app work with databases. We use R
     {
         "name": "thnguyendev/phpwebcore",
         "description": "PHPWebCore framework",
-        "version": "4.0.0",
+        "version": "1.0.0",
         "keywords": ["PHPWebCore", "PHP", "MVC framework", "OOP", "PSR-7", "PSR-17", "Dependency Injection"],
         "license": "MIT",
         "type": "project",
@@ -404,7 +404,7 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
     {
         "name": "thnguyendev/phpwebcore",
         "description": "PHPWebCore framework",
-        "version": "4.0.0",
+        "version": "1.0.0",
         "keywords": ["PHPWebCore", "PHP", "MVC framework", "OOP", "PSR-7", "PSR-17", "Dependency Injection"],
         "license": "MIT",
         "type": "project",
