@@ -165,9 +165,9 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
     {
         public function getProjectInfo()
         {
-            // return json
+            // Return json
             echo "{ 'Project': 'PHPWebCore Api Example', 'Framework': 'PHPWebCore' }";
-            // set content type is application/json
+            // Set content type is application/json
             header("Content-Type: application/json");
         }
     }
@@ -315,9 +315,9 @@ You need to create "Services" folder in your app folder to put all of these serv
 
         public function getProjectInfo()
         {
-            // return json
+            // Return json
             echo $this->projectService->getProjectInfo();
-            // set content type is application/json
+            // Set content type is application/json
             header("Content-Type: application/json");
         }
     }

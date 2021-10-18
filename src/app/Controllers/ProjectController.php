@@ -14,9 +14,9 @@ class ProjectController extends Controller
 
     public function getProjectInfo()
     {
-        // return json
+        // Return json
         echo $this->projectService->getProjectInfo();
-        // set content type is application/json
+        // Set content type is application/json
         header("Content-Type: application/json");
     }
 }
