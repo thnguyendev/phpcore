@@ -197,7 +197,8 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
 4. Is it too simple? Run your project and use below Url in a browser to see your work.
     * http://[your host]/project
 ## RedBeanPHP and SQLite
-This example desmonstrates how your PHPWebCore app work with databases. We use RedBeanPHP and SQLite because it is so easy to included to your app. Just make sure you have SQLite enabled in your php.ini.
+This example desmonstrates how your PHPWebCore app work with databases. We use RedBeanPHP and SQLite because it is so easy to included to your app. Just make sure you have SQLite enabled in PHP.
+    * php.ini
     ```shell
     extension=pdo_sqlite
     extension=sqlite3
