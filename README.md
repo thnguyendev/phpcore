@@ -251,7 +251,7 @@ You need to create "Services" folder in your app folder to put all of these serv
 
         public function __construct(string $connectionString)
         {
-            // Open a connaction
+            // Open a connection
             R::setup($connectionString);
             $project = R::load(static::Project, 1);
             // No database then create one
