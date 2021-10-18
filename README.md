@@ -194,7 +194,7 @@ In this tutorial, we will create a PHPWebCore API. First thing first, you need t
         }
     }
     ```
-4. Is is too simple enough to you!? Run your project and use below Url in a browser to see your work.
+4. Is it too simple enough to you!? Run your project and use below Url in a browser to see your work.
     * http://[your host]/project
 ## Use Doctrine ORM to work with Sqlite database
 This example will create a Web API that returns data from SQLite with Doctrine, make sure that SQLite PDO has been enabled in PHP configuration.
