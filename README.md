@@ -125,7 +125,7 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     * http://[your host]
     * http://[your host]/[name]
 ## Web API
-In this turtorial, we will create a PHPWebCore API. First thing first, you need to create a PHPWebCore project.
+In this tutorial, we will create a PHPWebCore API. First thing first, you need to create a PHPWebCore project.
 1. When you have your project, define your API route that uses GET method. This api just simply returns the information of your project in JSON.
     ```php
     namespace App;
