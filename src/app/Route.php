@@ -17,7 +17,7 @@ class Route extends AppRoute
             [
                 // Root path can be empty or "/"
                 RouteProperty::Path => "",
-                // Parameters is an a array of string, contains all parameters' names
+                // Full class name with namespace. "App" is root namespace of the app
                 RouteProperty::Controller => HomeController::class,
                 // Action method name
                 RouteProperty::Action => "index",
@@ -54,7 +54,7 @@ class Route extends AppRoute
                 RouteProperty::Path => "project",
                 // HTTP method attached to this action. If no declaration then all methods are accepted
                 RouteProperty::Methods => [HttpMethod::Get],
-                // Parameters is an a array of string, contains all parameters' names
+                // Full class name with namespace. "App" is root namespace of the app
                 RouteProperty::Controller => ProjectController::class,
                 // Action method name
                 RouteProperty::Action => "getProjectInfo",
@@ -62,12 +62,12 @@ class Route extends AppRoute
             [
                 // Root path can be empty or "/"
                 RouteProperty::Path => "login",
-                // HTTP method attached to this action. If no declaration then all methods are accepted
-                RouteProperty::Methods => [HttpMethod::Get],
-                // Parameters is an a array of string, contains all parameters' names
-                RouteProperty::Controller => UserController::class,
                 // Parameters is an a array of string, contains all parameters' names
                 RouteProperty::Parameters => ["username", "password"],
+                // HTTP method attached to this action. If no declaration then all methods are accepted
+                RouteProperty::Methods => [HttpMethod::Get],
+                // Full class name with namespace. "App" is root namespace of the app
+                RouteProperty::Controller => UserController::class,
                 // Action method name
                 RouteProperty::Action => "login",
             ],
@@ -76,7 +76,7 @@ class Route extends AppRoute
                 RouteProperty::Path => "user",
                 // HTTP method attached to this action. If no declaration then all methods are accepted
                 RouteProperty::Methods => [HttpMethod::Get],
-                // Parameters is an a array of string, contains all parameters' names
+                // Full class name with namespace. "App" is root namespace of the app
                 RouteProperty::Controller => UserController::class,
                 // Action method name
                 RouteProperty::Action => "getUserInfo",
