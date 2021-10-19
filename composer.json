@@ -2,7 +2,7 @@
     "name": "thnguyendev/phpwebcore",
     "description": "PHPWebCore framework",
     "version": "1.0.0",
-    "keywords": ["PHPWebCore", "PHP", "MVC framework", "OOP", "PSR-7", "PSR-17", "Dependency Injection"],
+    "keywords": ["PHPWebCore", "PHP", "MVC", "OOP", "PSR-7", "PSR-17", "Dependency Injection"],
     "license": "MIT",
     "type": "project",
     "autoload": {
