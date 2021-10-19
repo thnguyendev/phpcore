@@ -7,8 +7,7 @@ class ExceptionHandler implements ErrorServiceInterface
 {
     public function process(\Throwable $e)
     {
-        echo "This is not an exception. It is testing";
-        exit;
+        echo "I've got the exception for now.";
     }
 }
 ?>

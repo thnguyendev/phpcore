@@ -17,7 +17,6 @@ class ErrorService implements ErrorServiceInterface
             $reasonPhrase = Response::ReasonPhrase[$code];
         header(Initialization::getProtocol()." {$code} {$reasonPhrase}", true);
         echo "[{$time}] Error: {$e->getFile()} | {$e->getLine()} | {$e->getMessage()}".PHP_EOL."{$e->getTraceAsString()}";
-        exit;
     }
 }
 ?>

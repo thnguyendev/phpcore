@@ -35,4 +35,5 @@ catch (Throwable $e)
 		$errorService = new ErrorService();
 	$errorService->process($e);
 }
+exit;
 ?>

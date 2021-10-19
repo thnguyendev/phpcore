@@ -203,6 +203,42 @@ In this tutorial, we will create a PHPWebCore Web API app. First thing first, yo
     ```
 4. Is it too simple? Run your project and use below Url in a browser to see your work.
     * http://[your host]/project
+## Override exception handler
+This shows how to have your own way to deal with the errors in your app. From your app antry point, the PHPWebCore\ErrorServiceInterface takes care of the exceptions in your app. So, to handle errors by yourself, just have your class implement ErrorServiceInterface and override it in app's container. The interface just need a method name process() with a Throwable parameter.
+1. Create your own exception handler and override the default
+    * [project folder]/src/app/ExceptionHandler.php
+    ```php
+    namespace App;
+
+    use PHPWebCore\ErrorServiceInterface;
+
+    class ExceptionHandler implements ErrorServiceInterface
+    {
+        public function process(\Throwable $e)
+        {
+            echo "I've got this exception for now.";
+        }
+    }
+    ```
+    * [project folder]/src/app/Bootstrap.php
+    ```php
+    namespace App;
+
+    use PHPWebCore\App;
+    use PHPWebCore\ErrorServiceInterface;
+
+    class Bootstrap extends App
+    {
+        public function process()
+        {
+            $this->container = $this->container
+                ->withTransient(ErrorServiceInterface::class, ExceptionHandler::class);
+            throw new \Exception();
+        }
+    }
+    ```
+2. Run your project and open below Url in browser.
+    * http://[your host]
 ## RedBeanPHP and SQLite
 This example desmonstrates how your PHPWebCore app work with databases. We use RedBeanPHP and SQLite because it is so easy to included to your app.
 1. Before we continue, let's make sure you have SQLite enabled in PHP, created your PHPWebCore and update composer.json to include RedBeanPHP to your app then run update command from Composer
