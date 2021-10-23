@@ -1,7 +1,7 @@
 # PHPWebCore 1.0.0
 PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET Core. It aims to be simple and easy to use. PHPWebCore implements PSR-7 HTTP message interfaces and PSR-17 HTTP Factories. It also supports dependency injection.
 
-PHPWebCore is a very basic framework. But, you can always include any PHP packages that need for your app, for instance, RedBeanPHP, Doctrine ORM, Firebase PHP-JWT, etc...
+PHPWebCore is a very basic framework. But, you can always include any PHP packages that need for your app, for instance, RedBeanPHP, Doctrine ORM, Firebase PHP-JWT, php-amqplib, etc...
 
 ## Quick start
 1. PHPWebCore needs Composer and of course PHP. Make sure you download and install [PHP](https://www.php.net/downloads.php) and [Composer](https://getcomposer.org/download).
