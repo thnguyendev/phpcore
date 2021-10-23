@@ -5,7 +5,7 @@ use Psr\Http\Message\Response;
 
 abstract class AppRoute
 {
-    protected $routes = [];
+    protected array $routes = [];
 
     /**
      * Initilize the AppRoute.

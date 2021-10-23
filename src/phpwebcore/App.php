@@ -19,13 +19,13 @@ use Psr\Http\Message\UriFactoryInterface;
 
 abstract class App
 {
-    protected $container;
-    protected $request;
-    protected $response;
-    protected $routing;
-    protected $route;
+    protected ContainerInterface $container;
+    protected ServerRequestInterface $request;
+    protected ResponseInterface $response;
+    protected AppRoute $routing;
+    protected array $route;
     protected $allowedOrigins;
-    private static $appFolder;
+    private static string $appFolder;
 
     /**
      * Implement all tasks in app
