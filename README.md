@@ -261,8 +261,8 @@ This example desmonstrates how your PHPWebCore app work with databases. We use R
         },
         "require": {
             "php": ">=7.0",
-            "psr/http-message": ">=1.0.1",
-            "psr/http-factory": ">=1.0.1",
+            "psr/http-message": "1.0.1",
+            "psr/http-factory": "1.0.1",
             "gabordemooij/redbean": ">=5.7"
         },
         "require-dev": {
@@ -446,8 +446,8 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
         },
         "require": {
             "php": ">=7.0",
-            "psr/http-message": ">=1.0.1",
-            "psr/http-factory": ">=1.0.1",
+            "psr/http-message": "1.0.1",
+            "psr/http-factory": "1.0.1",
             "firebase/php-jwt": ">=5.4.0"
         },
         "require-dev": {
