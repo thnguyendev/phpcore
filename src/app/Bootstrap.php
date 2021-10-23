@@ -32,7 +32,7 @@ class Bootstrap extends App
         //$this->useHttps();
 
         // Allow CORS
-        //$this->allowCors();
+        $this->allowCors();
 
         // Use routing to map route
         $this->useRouting(new Route());

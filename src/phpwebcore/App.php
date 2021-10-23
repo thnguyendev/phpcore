@@ -24,7 +24,7 @@ abstract class App
     protected ResponseInterface $response;
     protected AppRoute $routing;
     protected array $route;
-    protected $allowedOrigins;
+    protected string|array $allowedOrigins;
     private static string $appFolder;
 
     /**

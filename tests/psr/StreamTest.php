@@ -1,9 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\Stream;
-
-use function PHPUnit\Framework\assertInstanceOf;
-use function PHPUnit\Framework\assertSame;
+use Psr\Http\Message\StreamFactory;
 
 class StreamTest extends TestCase
 {
@@ -12,11 +10,11 @@ class StreamTest extends TestCase
         $content = "testing content";
         $resource = tmpfile();
         fwrite($resource, $content);
-        
-        $stream = new Stream($resource);
-        assertInstanceOf(Stream::class, $stream);
-        assertSame($content, $stream->__toString());
-
+        rewind($resource);
+        $factory = new StreamFactory();
+        $stream = $factory->createStreamFromResource($resource);
+        $this->assertInstanceOf(Stream::class, $stream);
+        $this->assertSame($content, $stream->__toString());
         fclose($resource);
     }
 }
