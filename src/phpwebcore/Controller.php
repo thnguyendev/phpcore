@@ -6,9 +6,9 @@ use Psr\Http\Message\ResponseInterface;
 
 class Controller
 {
-	protected $request;
-	protected $response;
-	protected $view = null;
+	protected ServerRequestInterface $request;
+	protected ResponseInterface $response;
+	protected ?string $view = null;
 	protected $bucket = null;
 
 	/**
@@ -64,7 +64,7 @@ class Controller
 	}
 
 	/**
-     * Invoke view of controller.
+     * Include view file.
      *
      * @param array $args arguments sent to view
      */
@@ -74,11 +74,11 @@ class Controller
 		{
 			$file = App::getAppFolder().$this->view;
 			if (file_exists($file))
-				require_once($file);
+				include_once($file);
 			else if (file_exists($file.".php"))
-				require_once($file.".php");
+				include_once($file.".php");
 			else if (file_exists($file.".html"))
-				require_once($file.".html");
+				include_once($file.".html");
 			else
 				throw new NotFoundException("View {$this->view} not found", 404);
 		}

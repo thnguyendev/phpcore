@@ -3,7 +3,7 @@ namespace PHPWebCore;
 
 class Container implements ContainerInterface
 {
-    protected $container = [];
+    protected array $container = [];
 
     public function withSingleton(string $id, $entry, $parameters = [])
     {
