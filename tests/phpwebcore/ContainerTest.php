@@ -7,7 +7,8 @@ class ContainerTest extends TestCase
     public function testContainer()
     {
         $container = new Container();
-        $container = $container->withTransient(Engine::class, Engine::class)
+        $container = $container
+            ->withTransient(Engine::class, Engine::class)
             ->withTransient(Wheel::class, Wheel::class)
             ->withSingleton(Car::class, Car::class);
         $car = $container->get(Car::class);

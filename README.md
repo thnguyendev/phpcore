@@ -1,6 +1,8 @@
 # PHPWebCore 1.0.0
 PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET Core. It aims to be simple and easy to use. PHPWebCore implements PSR-7 HTTP message interfaces and PSR-17 HTTP Factories. It also supports dependency injection.
 
+PHPWebCore is a very basic framework. But, you can always include any PHP packages that need for your app, for instance, RedBeanPHP, Doctrine ORM, Firebase PHP-JWT, etc...
+
 ## Quick start
 1. PHPWebCore needs Composer and of course PHP. Make sure you download and install [PHP](https://www.php.net/downloads.php) and [Composer](https://getcomposer.org/download).
 2. Create PHPWebCore project by Composer. Then, run the update command from Composer to download all of denpendencies.
@@ -113,11 +115,8 @@ PHPWebCore is a MVC framework in PHP. It is built on the habits of using ASP.NET
     {
         public function process()
         {
-            // Add default routing
-            $this->setRouting(new Route());
-            
             // Use routing to map route
-            $this->useRouting();
+            $this->useRouting(new Route());
 
             // Invoke the action to fulfill the request
             // Data likes user information from Authorization can be passed to controller by bucket
@@ -189,11 +188,8 @@ In this tutorial, we will create a PHPWebCore Web API app. First thing first, yo
     {
         public function process()
         {
-            // Add default routing
-            $this->setRouting(new Route());
-            
             // Use routing to map route
-            $this->useRouting();
+            $this->useRouting(new Route());
 
             // Invoke the action to fulfill the request
             // Data likes user information from Authorization can be passed to controller by bucket
@@ -415,11 +411,8 @@ You need to create "Services" folder in your app folder to put all of these serv
             $this->container = $this->container
                 ->withTransient(ProjectServiceInterface::class, ProjectService::class);
 
-            // Add default routing
-            $this->setRouting(new Route());
-            
             // Use routing to map route
-            $this->useRouting();
+            $this->useRouting(new Route());
 
             // Invoke the action to fulfill the request
             // Data likes user information from Authorization can be passed to controller by bucket
@@ -623,11 +616,8 @@ This time we make PHPWebCore app work with PHP-JWT authorization.
                 ->withSingleton(ServerRequestInterface::class, $this->request)
                 ->withTransient(UserServiceInterface::class, UserService::class);
 
-            // Add default routing
-            $this->setRouting(new Route());
-            
             // Use routing to map route
-            $this->useRouting();
+            $this->useRouting(new Route());
 
             $bucket = [];
             // Authorize here

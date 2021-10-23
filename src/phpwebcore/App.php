@@ -67,11 +67,6 @@ abstract class App
         return static::$appFolder;
     }
 
-    protected function setRouting(AppRoute $routing)
-    {
-        $this->routing = $routing;
-    }
-
     protected function allowCors($origins = "*")
     {
         if (!is_string($origins) && !is_array($origins))
@@ -91,8 +86,9 @@ abstract class App
         }
     }
 
-    protected function useRouting()
+    protected function useRouting(AppRoute $routing)
     {
+        $this->routing = $routing;
         $this->routing->initialize();
         $this->route = $this->routing->getRoute($this->request->getMethod(), $this->request->getUri()->getPath());
     }
