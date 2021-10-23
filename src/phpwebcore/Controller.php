@@ -9,8 +9,14 @@ class Controller
 	protected $request;
 	protected $response;
 	protected $view = null;
-	protected $bucket = [];
+	protected $bucket = null;
 
+	/**
+     * Return an instance with the specified request.
+     *
+     * @param ServerRequestInterface $request
+     * @return static
+     */
 	public function withRequest(ServerRequestInterface $request)
 	{
 		$clone = clone $this;
@@ -18,6 +24,12 @@ class Controller
 		return $clone;
 	}
 
+	/**
+     * Return an instance with the specified response.
+     *
+     * @param ResponseInterface $response
+     * @return static
+     */
 	public function withResponse(ResponseInterface $response)
 	{
 		$clone = clone $this;
@@ -25,13 +37,25 @@ class Controller
 		return $clone;
 	}
 
-	public function withBucket(array $bucket)
+	/**
+     * Return an instance with the specified bucket.
+     *
+     * @param mixed $bucket
+     * @return static
+     */
+	public function withBucket($bucket)
 	{
 		$clone = clone $this;
 		$clone->bucket = $bucket;
 		return $clone;
 	}
 
+	/**
+     * Return an instance with the specified view filename (path included).
+     *
+     * @param string $view
+     * @return static
+     */
 	public function withView(string $view)
 	{
 		$clone = clone $this;
@@ -39,6 +63,11 @@ class Controller
 		return $clone;
 	}
 
+	/**
+     * Invoke view of controller.
+     *
+     * @param array $args arguments sent to view
+     */
 	public function view(array $args = [])
 	{
 		if (isset($this->view))
@@ -55,6 +84,9 @@ class Controller
 		}
 	}
 
+	/**
+     * Write response to response header.
+     */
 	public function applyResponse()
 	{
 		header(Initialization::getProtocol()." {$this->response->getStatusCode()} {$this->response->getReasonPhrase()}", true);

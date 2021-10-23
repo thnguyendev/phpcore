@@ -7,8 +7,18 @@ abstract class AppRoute
 {
     protected $routes = [];
 
+    /**
+     * Initilize the AppRoute.
+     */
     abstract public function initialize();
 
+    /**
+     * Find a route from HTTP method and Uri path.
+     * 
+     * @param string $method HTTP method
+     * @param string @path Uri path
+     * @return array a route is NULL if not found
+     */
     public function getRoute(string $method, string $path)
     {
         $route = null;

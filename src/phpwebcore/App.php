@@ -27,8 +27,17 @@ abstract class App
     protected $allowedOrigins;
     private static $appFolder;
 
+    /**
+     * Implement all tasks in app
+     */
     abstract public function process();
 
+    /**
+     * Return an instance with the specified container appended with the given value.
+     *
+     * @param ContainerInterface $container
+     * @return static
+     */
     public function withContainer(ContainerInterface $container)
     {
         $clone = clone $this;
@@ -36,6 +45,12 @@ abstract class App
         return $clone;
     }
 
+    /**
+     * Return an instance with the specified request appended with the given value.
+     *
+     * @param ServerRequestInterface $request
+     * @return static
+     */
     public function withRequest(ServerRequestInterface $request)
     {
         $clone = clone $this;
@@ -43,6 +58,12 @@ abstract class App
         return $clone;
     }
 
+    /**
+     * Return an instance with the specified response appended with the given value.
+     *
+     * @param ResponseInterface $response
+     * @return static
+     */
     public function withResponse(ResponseInterface $response)
     {
         $clone = clone $this;
@@ -50,6 +71,12 @@ abstract class App
         return $clone;
     }
 
+    /**
+     * Return an instance with the specified based folder appended with the given value.
+     *
+     * @param string $appFolder
+     * @return static
+     */
     public function withAppFolder(string $appFolder)
     {
         $clone = clone $this;
@@ -57,16 +84,31 @@ abstract class App
         return $clone;
     }
 
+    /**
+     * Return the container.
+     *
+     * @return ContainerInterface
+     */
     public function getContainer()
     {
         return $this->container;
     }
 
+    /**
+     * Return based folder of app.
+     *
+     * @return string
+     */
     public static function getAppFolder()
     {
         return static::$appFolder;
     }
 
+    /**
+     * Apply the origins will be allowed in CORS.
+     *
+     * @param string|string[] $origin
+     */
     protected function allowCors($origins = "*")
     {
         if (!is_string($origins) && !is_array($origins))
@@ -74,6 +116,9 @@ abstract class App
         $this->allowedOrigins = $origins;
     }
 
+    /**
+     * Redirect to HTTPS.
+     */
     protected function useHttps()
     {
         $uri = $this->request->getUri();
@@ -86,6 +131,11 @@ abstract class App
         }
     }
 
+    /**
+     * Find a route for request.
+     *
+     * @param AppRoute $routing
+     */
     protected function useRouting(AppRoute $routing)
     {
         $this->routing = $routing;
@@ -93,6 +143,11 @@ abstract class App
         $this->route = $this->routing->getRoute($this->request->getMethod(), $this->request->getUri()->getPath());
     }
 
+    /**
+     * Invoke the action of controller.
+     *
+     * @param mixed $bucket data pass to the controller
+     */
     protected function invokeAction($bucket = null)
     {
         if ($this->request->getMethod() === HttpMethod::Options)
@@ -116,11 +171,7 @@ abstract class App
         if (isset($this->route[RouteProperty::View]))
             $controller = $controller->withView($this->route[RouteProperty::View]);
         if (isset($bucket))
-        {
-            if (!is_array($bucket))
-                $bucket = [$bucket];
             $controller = $controller->withBucket($bucket);
-        }
         $method = $reflection->getMethod($this->route[RouteProperty::Action]);
         $params = $method->getParameters();
         $values = $this->route[RouteProperty::Parameters];
@@ -141,6 +192,9 @@ abstract class App
         $controller->applyResponse();
     }
 
+    /**
+     * Validate HTTP methods from request.
+     */
     protected function checkMethod()
     {
         $supportedMethods = 
@@ -162,6 +216,9 @@ abstract class App
         }
     }
 
+    /**
+     * Validate the allowed CORS.
+     */
     protected function checkCors()
     {
         $allowed = false;
@@ -201,6 +258,9 @@ abstract class App
         }
     }
 
+    /**
+     * Initilize the app.
+     */
     public function initialize()
     {
         $uriFactory = new UriFactory();

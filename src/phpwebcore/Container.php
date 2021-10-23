@@ -52,7 +52,7 @@ class Container implements ContainerInterface
         return isset($this->container[$id]);
     }
 
-    protected function add($lifetime, string $id, $entry, $parameters = [])
+    private function add($lifetime, string $id, $entry, $parameters = [])
     {
         if (!is_string($id))
             throw new \InvalidArgumentException("Id must be a string");
@@ -85,7 +85,7 @@ class Container implements ContainerInterface
         return $clone;
     }
 
-    protected function resolve(string $class, $args)
+    private function resolve(string $class, $args)
     {
         if ($class instanceof \Closure)
             return call_user_func_array($class, $args);
